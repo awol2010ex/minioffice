@@ -92,7 +92,7 @@ $(function() {
 </div>
 
 <div position="center">
-  <div id="tab" style="width:99% ;height:90%;"></div>
+  <div id="tab"></div>
 </div>
 
 
