@@ -25,11 +25,11 @@ $(function() {
 	var g=$("#grid").ligerGrid({
         columns: [ 
               { display: 'id', name: 'id', width: "20%",isAllowHide: true },
-              { display: 'key', name: 'key', width: "20%",isAllowHide: true },
-              { display: '版本', name: 'version', width: "20%",isAllowHide: true },
-              { display: '名称', name: 'name', width: "20%",isAllowHide: true }
+              { display: '名称', name: 'name', width: "20%",isAllowHide: true },
+              { display: '部署时间', name: 'deploymentTime', width: "20%",isAllowHide: true  ,type:'date'}
+             
         ],
-        url: "<%=contextPath%>/restful/process/processDef/list/",
+        url: "<%=contextPath%>/restful/process/deployment/list/",
         sortName: 'id',
         showTitle: false,
         dataAction:'server',
