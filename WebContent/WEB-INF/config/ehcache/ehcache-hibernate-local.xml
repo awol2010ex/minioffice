@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+
+	<diskStore path="java.io.tmpdir/hibernate/minioffice" />
+	<!--
+		DefaultCache setting.
+		Modify ehcache-safe.xml for timeToIdleSeconds,timeToLiveSecond,diskExpiryThreadIntervalSeconds.
+		Use ehcache-safe.xml default for maxElementsInMemory,maxElementsOnDisk,overflowToDisk,eternal.
+		Use ehcache default for memoryStoreEvictionPolicy,diskPersistent.
+	-->
+	<defaultCache maxElementsInMemory="10000" overflowToDisk="true" eternal="false"
+		memoryStoreEvictionPolicy="LRU" diskExpiryThreadIntervalSeconds="600"
+		timeToIdleSeconds="3600" timeToLiveSeconds="100000" diskPersistent="false" />
+
+
+	
+	
+	<cache name="service_cache" maxElementsInMemory="500" overflowToDisk="true"
+		eternal="false" timeToIdleSeconds="120"  timeToLiveSeconds="120" 
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="120">
+	</cache>
+</ehcache>
