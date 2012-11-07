@@ -1,7 +1,12 @@
 package com.minioffice.process;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
@@ -16,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 //流程相关操作展示类
@@ -33,9 +39,8 @@ public class ProcessController {
 			HttpServletResponse response) {
 		ProcessDefinitionQuery query = processEngineFactoryBean
 				.getProcessEngineConfiguration().getRepositoryService()
-				.createProcessDefinitionQuery()
-				.active()
-				.latestVersion()//最新版本
+				.createProcessDefinitionQuery().active().latestVersion()
+				// 最新版本
 				.orderByProcessDefinitionKey().desc()
 				.orderByProcessDefinitionVersion().desc();
 
@@ -51,7 +56,8 @@ public class ProcessController {
 					Rows.add(new JSONObject().element("id", p.getId())
 							.element("key", p.getKey())
 							.element("version", p.getVersion())
-							.element("name", p.getName()));
+							.element("name", p.getName())
+							.element("deploymentId", p.getDeploymentId()));
 				}
 			}
 
@@ -62,22 +68,74 @@ public class ProcessController {
 			logger.error("", e);
 		}
 	}
-	
+
+	// 显示流程图PNG
+	@RequestMapping(value = "/processDef/diagram/{deploymentId}")
+	public void diagramFromDeployment(@PathVariable String deploymentId,
+			HttpServletRequest request ,HttpServletResponse response) {
+		response.setContentType("image/png");
+		String diagramResourceName = null;// 生成的图片资源名称
+		List<ProcessDefinition> processDefinitionList = processEngineFactoryBean
+				.getProcessEngineConfiguration().getRepositoryService()
+				.createProcessDefinitionQuery().deploymentId(deploymentId)
+				.orderByProcessDefinitionVersion().desc().list();
+		ProcessDefinition processDefinition = null;// 流程定义
+		if (processDefinitionList != null && processDefinitionList.size() > 0) {
+			for(ProcessDefinition p :processDefinitionList){
+				if(p.getDiagramResourceName()!=null){
+					processDefinition = p;
+					break;
+				}
+			}
+		}
+
+		if (processDefinition != null) {
+			diagramResourceName = processDefinition.getDiagramResourceName();
+
+			if (diagramResourceName != null) {
+				InputStream imageStream = processEngineFactoryBean
+						.getProcessEngineConfiguration().getRepositoryService()
+						.getResourceAsStream(deploymentId, diagramResourceName);
+
+				try {// 输出流程图
+					BufferedImage theImg = ImageIO.read(imageStream);
+					ImageIO.write(theImg, "png", response.getOutputStream());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					logger.error("", e);
+				}
+			} else {
+				try {// 提示没有流程图
+					response.sendRedirect(request.getContextPath()+  "/static/images/no_process_dragram.png");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					logger.error("", e);
+				}
+			}
+		} else {
+			try {// 提示没有流程图
+				response.sendRedirect(request.getContextPath()+"/static/images/no_process_dragram.png");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				logger.error("", e);
+			}
+		}
+	}
+
 	/* 取得已部署流程列表 */
 	@RequestMapping(value = "/deployment/list/")
 	public void getDeploymentList(int page, int pagesize,
 			HttpServletResponse response) {
 		DeploymentQuery query = processEngineFactoryBean
 				.getProcessEngineConfiguration().getRepositoryService()
-				.createDeploymentQuery()
-				.orderByDeploymenTime().desc();
+				.createDeploymentQuery().orderByDeploymenTime().desc();
 
 		try {
 			JSONObject o = new JSONObject();
 			o.put("Total", query.count());
 
-			List<Deployment> list = query.listPage(
-					(page - 1) * pagesize, pagesize);
+			List<Deployment> list = query.listPage((page - 1) * pagesize,
+					pagesize);
 			JSONArray Rows = new JSONArray();
 			if (list != null && list.size() > 0) {
 				for (Deployment p : list) {

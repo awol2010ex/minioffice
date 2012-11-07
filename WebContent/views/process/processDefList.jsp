@@ -37,7 +37,16 @@ $(function() {
         height:"90%",
         enabledEdit: true,
         dateFormat:'yyyy-MM-dd hh:mm:ss',
-        pageSizeOptions: [5, 10, 15]
+        pageSizeOptions: [5, 10, 15],
+        detail: { 
+        	//显示明细
+        	onShowDetail: function(row, detailPanel,callback){
+        		var img = document.createElement('img'); 
+                $(detailPanel).append(img);
+                img.src ="<%=contextPath%>/restful/process/processDef/diagram/"+row.deploymentId;
+        	}
+        	
+        }
 
     });
 });
