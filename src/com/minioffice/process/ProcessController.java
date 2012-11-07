@@ -35,6 +35,7 @@ public class ProcessController {
 				.getProcessEngineConfiguration().getRepositoryService()
 				.createProcessDefinitionQuery()
 				.active()
+				.latestVersion()//最新版本
 				.orderByProcessDefinitionKey().desc()
 				.orderByProcessDefinitionVersion().desc();
 
