@@ -41,9 +41,25 @@ $(function() {
         detail: { 
         	//显示明细
         	onShowDetail: function(row, detailPanel,callback){
-        		var img = document.createElement('img'); 
-                $(detailPanel).append(img);
-                img.src ="<%=contextPath%>/restful/process/processDef/diagram/"+row.deploymentId;
+               
+                
+                
+                var table =  $("<table width='100%'/>").appendTo(  $(detailPanel) );
+                var tr =  $("<tr/>").appendTo(  $(table) );
+                var td =  $("<td align='center'/>").appendTo(  $(tr) );
+                var img = $("<img/>").appendTo(  $(td) );
+                
+                img.attr("src" ,"<%=contextPath%>/restful/process/processDef/diagram/"+row.deploymentId);//显示流程图
+                
+                var tr =  $("<tr/>").appendTo(  $(table) );
+                var td =  $("<td align='center'/>").appendTo(  $(tr) );
+                var button = $("<button>发起流程</button>").appendTo(  $(td) );
+                button.data("row",row);
+                button.click(function(){
+                	var _row =$(this).data("row"); 
+                	console.log(_row);
+                });
+                
         	}
         	
         }
