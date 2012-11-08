@@ -2,6 +2,8 @@ package com.minioffice.user.web;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.activiti.engine.identity.User;
+import org.activiti.spring.ProcessEngineFactoryBean;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -12,15 +14,18 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 //用户相关操作展示类
 @Controller
 @RequestMapping(value = "/user")
 public class UserController {
 	private final static Logger logger = LoggerFactory
 			.getLogger(UserController.class);
-
+	@Autowired
+	private ProcessEngineFactoryBean processEngineFactoryBean;
 
 	/* 登录 */
 	@RequestMapping(value = "/login")
@@ -55,6 +60,10 @@ public class UserController {
 			logger.error("", e);
 			return "index";
 		}
+		User user = processEngineFactoryBean.getProcessEngineConfiguration()
+				.getIdentityService().createUserQuery().userId(j_username)
+				.singleResult();
+		currentUser.getSession().setAttribute("user", user);// 保存会话
 
 		return "main";
 	}

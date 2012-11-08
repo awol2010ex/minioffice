@@ -1,4 +1,4 @@
-package com.minioffice.process;
+package com.minioffice.process.web;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -55,9 +55,9 @@ public class ProcessController {
 				for (ProcessDefinition p : list) {
 					Rows.add(new JSONObject().element("id", p.getId())
 							.element("key", p.getKey())
-							.element("version", p.getVersion())
-							.element("name", p.getName())
-							.element("deploymentId", p.getDeploymentId()));
+							.element("version", p.getVersion())//版本
+							.element("name", p.getName())//流程名称
+							.element("deploymentId", p.getDeploymentId()));//部署ID
 				}
 			}
 

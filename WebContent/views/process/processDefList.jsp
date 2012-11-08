@@ -12,6 +12,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
 <jsp:include  page="../../css.jsp"  flush="true" />
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ProcessDwr.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>	
 <style type="text/css">
 body {
 	font-size: 12px;
@@ -57,7 +59,14 @@ $(function() {
                 button.data("row",row);
                 button.click(function(){
                 	var _row =$(this).data("row"); 
-                	console.log(_row);
+                	//发起流程
+                	ProcessDwr.initProcess(_row.key,function(result){
+                		 if(result){
+                            alert("发起成功");
+                         }else{
+                            alert("发起失败");
+                         }
+                	});
                 });
                 
         	}
