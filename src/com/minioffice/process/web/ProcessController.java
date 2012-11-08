@@ -12,11 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.spring.ProcessEngineFactoryBean;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +63,9 @@ public class ProcessController {
 				for (ProcessDefinition p : list) {
 					Rows.add(new JSONObject().element("id", p.getId())
 							.element("key", p.getKey())
-							.element("version", p.getVersion())//版本
-							.element("name", p.getName())//流程名称
-							.element("deploymentId", p.getDeploymentId()));//部署ID
+							.element("version", p.getVersion())// 版本
+							.element("name", p.getName())// 流程名称
+							.element("deploymentId", p.getDeploymentId()));// 部署ID
 				}
 			}
 
@@ -69,10 +77,10 @@ public class ProcessController {
 		}
 	}
 
-	// 显示流程图PNG
+	// 显示已部署流程定义的流程图PNG
 	@RequestMapping(value = "/processDef/diagram/{deploymentId}")
 	public void diagramFromDeployment(@PathVariable String deploymentId,
-			HttpServletRequest request ,HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) {
 		response.setContentType("image/png");
 		String diagramResourceName = null;// 生成的图片资源名称
 		List<ProcessDefinition> processDefinitionList = processEngineFactoryBean
@@ -81,8 +89,8 @@ public class ProcessController {
 				.orderByProcessDefinitionVersion().desc().list();
 		ProcessDefinition processDefinition = null;// 流程定义
 		if (processDefinitionList != null && processDefinitionList.size() > 0) {
-			for(ProcessDefinition p :processDefinitionList){
-				if(p.getDiagramResourceName()!=null){
+			for (ProcessDefinition p : processDefinitionList) {
+				if (p.getDiagramResourceName() != null) {
 					processDefinition = p;
 					break;
 				}
@@ -106,7 +114,8 @@ public class ProcessController {
 				}
 			} else {
 				try {// 提示没有流程图
-					response.sendRedirect(request.getContextPath()+  "/static/images/no_process_dragram.png");
+					response.sendRedirect(request.getContextPath()
+							+ "/static/images/no_process_dragram.png");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					logger.error("", e);
@@ -114,7 +123,8 @@ public class ProcessController {
 			}
 		} else {
 			try {// 提示没有流程图
-				response.sendRedirect(request.getContextPath()+"/static/images/no_process_dragram.png");
+				response.sendRedirect(request.getContextPath()
+						+ "/static/images/no_process_dragram.png");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				logger.error("", e);
@@ -151,6 +161,106 @@ public class ProcessController {
 			// TODO Auto-generated catch block
 			logger.error("", e);
 		}
+	}
+
+	// 取得当前用户发起的流程
+	@RequestMapping(value = "/myprocess/list/")
+	public void getMyProcessList(int page, int pagesize,
+			HttpServletResponse response) {
+		Subject currentUser = SecurityUtils.getSubject();
+		User user = (User) currentUser.getSession().getAttribute("user");// 当前用户
+		// 查询流程实例
+		HistoricProcessInstanceQuery query = processEngineFactoryBean
+				.getProcessEngineConfiguration().getHistoryService()
+				.createHistoricProcessInstanceQuery().startedBy(user.getId())
+				.orderByProcessInstanceStartTime().desc();
+		try {
+			JSONObject o = new JSONObject();
+			o.put("Total", query.count());
+
+			List<HistoricProcessInstance> list = query.listPage((page - 1)
+					* pagesize, pagesize);
+			JSONArray Rows = new JSONArray();
+			if (list != null && list.size() > 0) {
+				for (HistoricProcessInstance p : list) {
+					Rows.add(new JSONObject()
+							.element("id", p.getId())
+							.element("startTime", p.getStartTime())
+							// 发起时间
+							.element("endTime", p.getEndTime())
+							// 结束时间
+							.element("processDefinitionId",
+									p.getProcessDefinitionId())// 流程定义ID
+					);
+				}
+			}
+
+			o.put("Rows", Rows);
+			response.getWriter().print(o.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("", e);
+		}
+	}
+
+	// 查看流程实例的流程图
+	@RequestMapping(value = "/processInstance/diagram/{processInstanceId}")
+	public void diagramFromProcessInstance(
+			@PathVariable String processInstanceId, HttpServletRequest request,
+			HttpServletResponse response) {
+		// 取得流程实例
+		HistoricProcessInstance processInstance = processEngineFactoryBean
+				.getProcessEngineConfiguration().getHistoryService()
+				.createHistoricProcessInstanceQuery()
+				.processInstanceId(processInstanceId).singleResult();
+
+		boolean draw =false;
+		if (processInstance != null) {
+			// 取得流程定义
+			ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) (processEngineFactoryBean
+					.getProcessEngineConfiguration().getRepositoryService()))
+					.getDeployedProcessDefinition(processInstance
+							.getProcessDefinitionId());
+
+			if (processDefinition != null
+					&& processDefinition.isGraphicalNotationDefined()) {
+
+				draw=true;
+				// 生成实时的流程图
+				try {
+					InputStream definitionImageStream = ProcessDiagramGenerator
+							.generateDiagram(
+									processDefinition,
+									"png",
+									processEngineFactoryBean
+											.getProcessEngineConfiguration()
+											.getRuntimeService()
+											.getActiveActivityIds(
+													processInstance.getId()));
+					try {// 输出流程图
+						BufferedImage theImg = ImageIO.read(definitionImageStream);
+						ImageIO.write(theImg, "png", response.getOutputStream());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						logger.error("", e);
+					}
+				} catch (Exception e) {
+					logger.error("", e);
+				}
+
+			}
+		}
+		
+		if(!draw){
+			try {// 提示没有流程图
+				response.sendRedirect(request.getContextPath()
+						+ "/static/images/no_process_dragram.png");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				logger.error("", e);
+			}
+		}
+
 	}
 
 }
