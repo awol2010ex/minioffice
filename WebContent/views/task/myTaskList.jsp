@@ -18,18 +18,22 @@ body {
 }
 </style>	
 <script type='text/javascript'>
-var g=null;
-//我发起的流程列表
+var g_assignee=null;//分派任务列表
+//我的任务列表
 $(function() {
 	$("body").ligerLayout( {});
-	var g=$("#grid").ligerGrid({
+	
+	 $("#navtab1").ligerTab(); //标签页
+
+	//被分派任务
+	var g_assignee=$("#grid_assignee").ligerGrid({
         columns: [ 
               { display: 'id', name: 'id', width: "20%",isAllowHide: true },
-              { display: '开始时间', name: 'startTime', width: "20%",isAllowHide: true ,type:'date'},
-              { display: '结束时间', name: 'EndTime', width: "20%",isAllowHide: true,type:'date' },
-              { display: '流程定义ID', name: 'processDefinitionId', width: "20%",isAllowHide: true },
+              { display: '任务创建时间', name: 'createTime', width: "20%",isAllowHide: true ,type:'date'},
+              { display: '处理时间', name: 'dueDate', width: "20%",isAllowHide: true,type:'date' },
+              { display: '任务名称', name: 'name', width: "20%",isAllowHide: true }
         ],
-        url: "<%=contextPath%>/restful/process/myprocess/list/",
+        url: "<%=contextPath%>/restful/task/mytask/assignee/list/",
         sortName: 'id',
         showTitle: false,
         dataAction:'server',
@@ -47,9 +51,9 @@ $(function() {
                 var table =  $("<table width='100%'/>").appendTo(  $(detailPanel) );
                 var tr =  $("<tr/>").appendTo(  $(table) );
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );
-                var img = $("<img/>").appendTo(  $(td) );
+                var img = $("<img src='<%=contextPath%>/static/skins/Aqua/images/common/loading.gif'/>").appendTo(  $(td) );
                 
-                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.id);//显示流程图
+                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.processInstanceId);//显示流程图
                 
                 
                 
@@ -64,7 +68,12 @@ $(function() {
 <body>
 
 <div position="center">
-  <div id="grid" style="width:99% ;height:90%;"></div>
+   <div id="navtab1" style="width: 100%;overflow:hidden; border:1px solid #A3C0E8; ">
+        <div  title="分派任务" showClose="false">
+        
+            <div id="grid_assignee" style="width:99% ;height:90%;"></div>
+        </div>
+   </div>
 </div>
 
 

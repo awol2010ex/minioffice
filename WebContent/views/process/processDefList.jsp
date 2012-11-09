@@ -21,7 +21,7 @@ body {
 </style>	
 <script type='text/javascript'>
 var g=null;
-
+//已部署流程定义列表
 $(function() {
 	$("body").ligerLayout( {});
 	var g=$("#grid").ligerGrid({

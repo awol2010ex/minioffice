@@ -19,7 +19,7 @@ body {
 </style>	
 <script type='text/javascript'>
 var g=null;
-
+//部署流程模板列表
 $(function() {
 	$("body").ligerLayout( {});
 	var g=$("#grid").ligerGrid({
