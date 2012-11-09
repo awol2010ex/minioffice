@@ -16,7 +16,7 @@ public class ProcessDwr {
 			.getLogger(ProcessDwr.class);
 
 	@Autowired
-	private ProcessEngineFactoryBean processEngineFactoryBean;
+	private ProcessEngineFactoryBean processEngineFactoryBean;//流程操作部件
 
 	// 发起流程
 	public boolean initProcess(String key) {

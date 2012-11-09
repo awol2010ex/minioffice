@@ -11,6 +11,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/TaskDwr.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
 <jsp:include  page="../../css.jsp"  flush="true" />
 <style type="text/css">
 body {
@@ -55,6 +57,21 @@ $(function() {
                 
                 img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.processInstanceId);//显示流程图
                 
+                var tr =  $("<tr/>").appendTo(  $(table) );
+                var td =  $("<td align='center'/>").appendTo(  $(tr) );
+                var button = $("<button>审批任务</button>").appendTo(  $(td) );
+                button.data("row",row);
+                button.click(function(){
+                	var _row =$(this).data("row"); 
+                	//审批任务流程
+                	TaskDwr.commitTask(_row.id ,function(result){
+               		   if(result){
+                         alert("审批成功");
+                       }else{
+                         alert("审批失败");
+                       }
+                	});
+                });
                 
                 
         	}
