@@ -59,7 +59,7 @@ $(function() {
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );
                 var img = $("<img src='<%=contextPath%>/static/skins/Aqua/images/common/loading.gif'/>").appendTo(  $(td) );
                 
-                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.processInstanceId);//显示流程图
+                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.processInstanceId+"/?rand="+new Date().getTime());//显示流程图
                 
                 var tr =  $("<tr/>").appendTo(  $(table) );
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );
@@ -89,9 +89,11 @@ $(function() {
 	//已归档任务
 	g_history=$("#grid_history").ligerGrid({
         columns: [ 
-              { display: 'id', name: 'id', width: "20%",isAllowHide: true },
+              { display: '序号', name: 'id', width: "20%",isAllowHide: true },
+              
+              { display: '开始时间', name: 'startTime', width: "20%",isAllowHide: true,type:'date' },
               { display: '完成时间', name: 'endTime', width: "20%",isAllowHide: true ,type:'date'},
-              { display: '处理时间', name: 'dueDate', width: "20%",isAllowHide: true,type:'date' },
+              
               { display: '任务名称', name: 'name', width: "20%",isAllowHide: true }
         ],
         url: "<%=contextPath%>/restful/task/mytask/history/list/",
@@ -114,7 +116,7 @@ $(function() {
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );
                 var img = $("<img src='<%=contextPath%>/static/skins/Aqua/images/common/loading.gif'/>").appendTo(  $(td) );
                 
-                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.processInstanceId);//显示流程图
+                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.processInstanceId+"/?rand="+new Date().getTime());//显示流程图
                 
                 
                 

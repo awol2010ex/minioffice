@@ -3,6 +3,7 @@ package com.minioffice.process.web;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -225,18 +226,20 @@ public class ProcessController {
 			if (processDefinition != null
 					&& processDefinition.isGraphicalNotationDefined()) {
 
-				
+				List<String> haIdList = new ArrayList<String>();// 当前环节
+				try {
+					haIdList = processEngineFactoryBean
+							.getProcessEngineConfiguration()
+							.getRuntimeService()
+							.getActiveActivityIds(processInstance.getId());
+				} catch (Exception e) {
+					logger.error("", e);
+				}
 				// 生成实时的流程图
 				try {
+
 					InputStream definitionImageStream = ProcessDiagramGenerator
-							.generateDiagram(
-									processDefinition,
-									"png",
-									processEngineFactoryBean
-											.getProcessEngineConfiguration()
-											.getRuntimeService()
-											.getActiveActivityIds(
-													processInstance.getId()));
+							.generateDiagram(processDefinition, "png", haIdList);
 					// 输出流程图
 					BufferedImage theImg = ImageIO.read(definitionImageStream);
 					ImageIO.write(theImg, "png", response.getOutputStream());

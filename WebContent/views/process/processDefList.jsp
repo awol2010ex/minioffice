@@ -26,7 +26,7 @@ $(function() {
 	$("body").ligerLayout( {});
 	var g=$("#grid").ligerGrid({
         columns: [ 
-              { display: 'id', name: 'id', width: "20%",isAllowHide: true },
+              { display: '序号', name: 'id', width: "20%",isAllowHide: true },
               { display: 'key', name: 'key', width: "20%",isAllowHide: true },
               { display: '版本', name: 'version', width: "20%",isAllowHide: true },
               { display: '名称', name: 'name', width: "20%",isAllowHide: true }
@@ -51,7 +51,7 @@ $(function() {
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );
                 var img = $("<img/>").appendTo(  $(td) );
                 
-                img.attr("src" ,"<%=contextPath%>/restful/process/processDef/diagram/"+row.deploymentId);//显示流程图
+                img.attr("src" ,"<%=contextPath%>/restful/process/processDef/diagram/"+row.deploymentId+"/?rand="+new Date().getTime());//显示流程图
                 
                 var tr =  $("<tr/>").appendTo(  $(table) );
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );

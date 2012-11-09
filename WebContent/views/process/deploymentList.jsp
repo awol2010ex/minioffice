@@ -24,7 +24,7 @@ $(function() {
 	$("body").ligerLayout( {});
 	var g=$("#grid").ligerGrid({
         columns: [ 
-              { display: 'id', name: 'id', width: "20%",isAllowHide: true },
+              { display: '序号', name: 'id', width: "20%",isAllowHide: true },
               { display: '名称', name: 'name', width: "20%",isAllowHide: true },
               { display: '部署时间', name: 'deploymentTime', width: "20%",isAllowHide: true  ,type:'date'}
              

@@ -24,10 +24,10 @@ $(function() {
 	$("body").ligerLayout( {});
 	var g=$("#grid").ligerGrid({
         columns: [ 
-              { display: 'id', name: 'id', width: "20%",isAllowHide: true },
+              { display: '序号', name: 'id', width: "20%",isAllowHide: true },
               { display: '开始时间', name: 'startTime', width: "20%",isAllowHide: true ,type:'date'},
-              { display: '结束时间', name: 'EndTime', width: "20%",isAllowHide: true,type:'date' },
-              { display: '流程定义ID', name: 'processDefinitionId', width: "20%",isAllowHide: true },
+              { display: '结束时间', name: 'endTime', width: "20%",isAllowHide: true,type:'date' },
+              { display: '流程定义序号', name: 'processDefinitionId', width: "20%",isAllowHide: true },
         ],
         url: "<%=contextPath%>/restful/process/myprocess/list/",
         sortName: 'id',
@@ -49,7 +49,7 @@ $(function() {
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );
                 var img = $("<img/>").appendTo(  $(td) );
                 
-                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.id);//显示流程图
+                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.id+"/?rand="+new Date().getTime());//显示流程图
                 
                 
                 
