@@ -21,14 +21,18 @@ body {
 </style>	
 <script type='text/javascript'>
 var g_assignee=null;//分派任务列表
+
+var g_history=null;//已归档任务列表
+
+
 //我的任务列表
 $(function() {
 	$("body").ligerLayout( {});
 	
-	 $("#navtab1").ligerTab(); //标签页
+	
 
 	//被分派任务
-	var g_assignee=$("#grid_assignee").ligerGrid({
+	g_assignee=$("#grid_assignee").ligerGrid({
         columns: [ 
               { display: 'id', name: 'id', width: "20%",isAllowHide: true },
               { display: '任务创建时间', name: 'createTime', width: "20%",isAllowHide: true ,type:'date'},
@@ -79,6 +83,49 @@ $(function() {
         }
 
     });
+	 
+	 
+	 
+	//已归档任务
+	g_history=$("#grid_history").ligerGrid({
+        columns: [ 
+              { display: 'id', name: 'id', width: "20%",isAllowHide: true },
+              { display: '完成时间', name: 'endTime', width: "20%",isAllowHide: true ,type:'date'},
+              { display: '处理时间', name: 'dueDate', width: "20%",isAllowHide: true,type:'date' },
+              { display: '任务名称', name: 'name', width: "20%",isAllowHide: true }
+        ],
+        url: "<%=contextPath%>/restful/task/mytask/history/list/",
+        sortName: 'id',
+        showTitle: false,
+        dataAction:'server',
+        pageSize: 5,
+        height:"90%",
+        enabledEdit: true,
+        dateFormat:'yyyy-MM-dd hh:mm:ss',
+        pageSizeOptions: [5, 10, 15],
+        detail: { 
+        	//显示明细
+        	onShowDetail: function(row, detailPanel,callback){
+               
+                
+                
+                var table =  $("<table width='100%'/>").appendTo(  $(detailPanel) );
+                var tr =  $("<tr/>").appendTo(  $(table) );
+                var td =  $("<td align='center'/>").appendTo(  $(tr) );
+                var img = $("<img src='<%=contextPath%>/static/skins/Aqua/images/common/loading.gif'/>").appendTo(  $(td) );
+                
+                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.processInstanceId);//显示流程图
+                
+                
+                
+        	}
+        	
+        }
+
+    });
+	
+	
+	 $("#navtab1").ligerTab(); //标签页
 });
 </script>
 </head>
@@ -87,8 +134,12 @@ $(function() {
 <div position="center">
    <div id="navtab1" style="width: 100%;overflow:hidden; border:1px solid #A3C0E8; ">
         <div  title="分派任务" showClose="false">
-        
+            <!-- 被分派任务 -->
             <div id="grid_assignee" style="width:99% ;height:90%;"></div>
+        </div>
+        <div  title="已归档任务" showClose="false">
+            <!-- 已归档任务 -->
+            <div id="grid_history" style="width:99% ;height:90%;"></div>
         </div>
    </div>
 </div>

@@ -214,7 +214,7 @@ public class ProcessController {
 				.createHistoricProcessInstanceQuery()
 				.processInstanceId(processInstanceId).singleResult();
 
-		boolean draw =false;
+		boolean draw = false;
 		if (processInstance != null) {
 			// 取得流程定义
 			ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) (processEngineFactoryBean
@@ -225,7 +225,7 @@ public class ProcessController {
 			if (processDefinition != null
 					&& processDefinition.isGraphicalNotationDefined()) {
 
-				draw=true;
+				
 				// 生成实时的流程图
 				try {
 					InputStream definitionImageStream = ProcessDiagramGenerator
@@ -237,21 +237,18 @@ public class ProcessController {
 											.getRuntimeService()
 											.getActiveActivityIds(
 													processInstance.getId()));
-					try {// 输出流程图
-						BufferedImage theImg = ImageIO.read(definitionImageStream);
-						ImageIO.write(theImg, "png", response.getOutputStream());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						logger.error("", e);
-					}
+					// 输出流程图
+					BufferedImage theImg = ImageIO.read(definitionImageStream);
+					ImageIO.write(theImg, "png", response.getOutputStream());
+					draw = true;
 				} catch (Exception e) {
 					logger.error("", e);
 				}
 
 			}
 		}
-		
-		if(!draw){
+
+		if (!draw) {
 			try {// 提示没有流程图
 				response.sendRedirect(request.getContextPath()
 						+ "/static/images/no_process_dragram.png");

@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
@@ -38,8 +40,7 @@ public class TaskController {
 		// 查询任务
 		TaskQuery query = processEngineFactoryBean
 				.getProcessEngineConfiguration().getTaskService()
-				.createTaskQuery()
-				.taskAssignee(user.getId())
+				.createTaskQuery().taskAssignee(user.getId())
 				.orderByTaskCreateTime().desc();
 
 		try {
@@ -54,6 +55,52 @@ public class TaskController {
 							.element("id", p.getId())
 							.element("createTime", p.getCreateTime())
 							// 创建时间
+							.element("dueDate", p.getDueDate())
+							// 处理时间
+							.element("name", p.getName())
+							// 任务名称
+							.element("processDefinitionId",
+									p.getProcessDefinitionId())// 流程定义ID
+							.element("processInstanceId",
+									p.getProcessInstanceId())// 流程实例ID
+					);
+				}
+			}
+
+			o.put("Rows", Rows);
+			response.getWriter().print(o.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("", e);
+		}
+	}
+
+	/* 我的任务(已归档)列表 */
+	@RequestMapping(value = "/mytask/history/list/")
+	public void getMyHistoryTaskList(int page, int pagesize,
+			HttpServletResponse response) {
+		Subject currentUser = SecurityUtils.getSubject();
+		User user = (User) currentUser.getSession().getAttribute("user");// 当前用户
+
+		// 查询已归档任务
+		HistoricTaskInstanceQuery query = processEngineFactoryBean
+				.getProcessEngineConfiguration().getHistoryService()
+				.createHistoricTaskInstanceQuery().taskAssignee(user.getId())
+				.orderByHistoricTaskInstanceEndTime().desc();
+
+		try {
+			JSONObject o = new JSONObject();
+			o.put("Total", query.count());
+
+			List<HistoricTaskInstance> list = query.listPage((page - 1)
+					* pagesize, pagesize);
+			JSONArray Rows = new JSONArray();
+			if (list != null && list.size() > 0) {
+				for (HistoricTaskInstance p : list) {
+					Rows.add(new JSONObject()
+							.element("id", p.getId())
+							.element("endTime", p.getEndTime())
+							// 完成时间
 							.element("dueDate", p.getDueDate())
 							// 处理时间
 							.element("name", p.getName())
