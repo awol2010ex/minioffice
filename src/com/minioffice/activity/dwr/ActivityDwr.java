@@ -36,10 +36,10 @@ public class ActivityDwr {
 		if (list != null && list.size() > 0) {
 			for (HistoricActivityInstance p : list) {
 				historyActivitys.add(new JSONObject().element("id", p.getId())
-						.element("activityId", p.getActivityId())
-						.element("activityName", p.getActivityName())
-						.element("startTime", p.getStartTime())
-						.element("endTime", p.getEndTime()));
+						.element("activityId", p.getActivityId())//环节ID
+						.element("activityName", p.getActivityName())//环节名称
+						.element("startTime", p.getStartTime())//开始时间
+						.element("endTime", p.getEndTime()));//结束时间
 			}
 		}
 		result.put("historyActivitys", historyActivitys);
@@ -60,6 +60,7 @@ public class ActivityDwr {
 						.element("width", ai.getWidth())
 						.element("x", ai.getX())
 						.element("y", ai.getY())
+						.element("properties", ai.getProperties())
 						);
 			}
 		}

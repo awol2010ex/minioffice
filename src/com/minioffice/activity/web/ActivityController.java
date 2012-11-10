@@ -31,30 +31,29 @@ public class ActivityController {
 	@RequestMapping(value = "/history/list/{processInstanceId}")
 	public void getHistoryActivityList(@PathVariable String processInstanceId,
 			HttpServletRequest request, HttpServletResponse response) {
-		
-		//历史环节列表
+
+		// 历史环节列表
 		List<HistoricActivityInstance> list = processEngineFactoryBean
 				.getProcessEngineConfiguration().getHistoryService()
 				.createHistoricActivityInstanceQuery()
-				.processInstanceId(processInstanceId).orderByHistoricActivityInstanceStartTime().asc().list();
+				.processInstanceId(processInstanceId)
+				.orderByHistoricActivityInstanceStartTime().asc().list();
 
-		
 		JSONArray Rows = new JSONArray();
 		if (list != null && list.size() > 0) {
 			for (HistoricActivityInstance p : list) {
 				Rows.add(new JSONObject().element("id", p.getId())
-						.element("activityId", p.getActivityId())
-						.element("activityName", p.getActivityName())
-								.element("startTime", p.getStartTime())
-								.element("endTime", p.getEndTime())
-						);
+						.element("activityId", p.getActivityId())//环节ID
+						.element("activityName", p.getActivityName())//环节名称
+						.element("startTime", p.getStartTime())//开始时间
+						.element("endTime", p.getEndTime()));//结束时间
 			}
 		}
 		try {
 			response.getWriter().print(Rows.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			logger.error("",e);
+			logger.error("", e);
 		}
 	}
 }

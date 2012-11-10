@@ -23,6 +23,7 @@ $.fn.ProcessDiagram=function(p){
 			offsetTop:g.p.offsetTop//偏移
 			,
 			offsetLeft:g.p.offsetLeft//偏移
+			,g:g
 		});
         
 		img.load(function(){
@@ -64,7 +65,7 @@ $.fn.ProcessDiagram=function(p){
 			    	    	//画高亮节点
 			    	        for(var i=0,s=result.activities.length;i<s;i++){
 			    	            var activity=result.activities[i];
-			    	            var a=$("<div></div>").data({acticityId:activity.id})
+			    	            var a=$("<div></div>").data({acticityId:activity.activityId})
 			    	                  .appendTo(me.parent())
 			    	                  .css({
 
@@ -77,7 +78,7 @@ $.fn.ProcessDiagram=function(p){
 			    	                      "borderColor":"#6BE04E",
 			    	                      "borderWidth":"0px",
 			    	                      "borderStyle":"solid"
-			    	                  });
+			    	                  }).attr("title",activity.properties.name);//显示环节名称
 			    	        };
 			    	 }
 			    });
