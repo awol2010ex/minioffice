@@ -4,7 +4,10 @@
 <%
 	String contextPath = request.getContextPath();
 %>
+<script type="text/javascript" >
+var  __CONTEXT_PATH ="<%=contextPath%>";
 
+</script>
 <link rel="stylesheet" type="text/css"
 	href="<%=contextPath%>/static/skins/ligerui-icons.css" />
 <link rel="stylesheet" type="text/css"
