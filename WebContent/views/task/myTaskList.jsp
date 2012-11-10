@@ -34,10 +34,11 @@ $(function() {
 	//被分派任务
 	g_assignee=$("#grid_assignee").ligerGrid({
         columns: [ 
-              { display: 'id', name: 'id', width: "20%",isAllowHide: true },
-              { display: '任务创建时间', name: 'createTime', width: "20%",isAllowHide: true ,type:'date'},
-              { display: '处理时间', name: 'dueDate', width: "20%",isAllowHide: true,type:'date' },
-              { display: '任务名称', name: 'name', width: "20%",isAllowHide: true }
+              { display: 'id', name: 'id', width: "15%",isAllowHide: true },
+              { display: '任务创建时间', name: 'createTime', width: "15%",isAllowHide: true ,type:'date'},
+              { display: '处理时间', name: 'dueDate', width: "15%",isAllowHide: true,type:'date' },
+              { display: '任务名称', name: 'name', width: "15%",isAllowHide: true },
+              { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true }
         ],
         url: "<%=contextPath%>/restful/task/mytask/assignee/list/",
         sortName: 'id',
@@ -89,12 +90,13 @@ $(function() {
 	//已归档任务
 	g_history=$("#grid_history").ligerGrid({
         columns: [ 
-              { display: '序号', name: 'id', width: "20%",isAllowHide: true },
+              { display: '序号', name: 'id', width: "15%",isAllowHide: true },
               
-              { display: '开始时间', name: 'startTime', width: "20%",isAllowHide: true,type:'date' },
-              { display: '完成时间', name: 'endTime', width: "20%",isAllowHide: true ,type:'date'},
+              { display: '开始时间', name: 'startTime', width: "15%",isAllowHide: true,type:'date' },
+              { display: '完成时间', name: 'endTime', width: "15%",isAllowHide: true ,type:'date'},
               
-              { display: '任务名称', name: 'name', width: "20%",isAllowHide: true }
+              { display: '任务名称', name: 'name', width: "15%",isAllowHide: true },
+              { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true }
         ],
         url: "<%=contextPath%>/restful/task/mytask/history/list/",
         sortName: 'id',

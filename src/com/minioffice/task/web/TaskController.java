@@ -1,6 +1,8 @@
 package com.minioffice.task.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +12,7 @@ import net.sf.json.JSONObject;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.spring.ProcessEngineFactoryBean;
@@ -43,6 +46,8 @@ public class TaskController {
 				.createTaskQuery().taskAssignee(user.getId())
 				.orderByTaskCreateTime().desc();
 
+		Map<String, ProcessDefinition> processDefinitionMap = new HashMap<String, ProcessDefinition>();// 流程定义缓存
+
 		try {
 			JSONObject o = new JSONObject();
 			o.put("Total", query.count());
@@ -51,7 +56,7 @@ public class TaskController {
 			JSONArray Rows = new JSONArray();
 			if (list != null && list.size() > 0) {
 				for (Task p : list) {
-					Rows.add(new JSONObject()
+					JSONObject po = new JSONObject()
 							.element("id", p.getId())
 							.element("createTime", p.getCreateTime())
 							// 创建时间
@@ -62,8 +67,28 @@ public class TaskController {
 							.element("processDefinitionId",
 									p.getProcessDefinitionId())// 流程定义ID
 							.element("processInstanceId",
-									p.getProcessInstanceId())// 流程实例ID
-					);
+									p.getProcessInstanceId());// 流程实例ID
+
+					// 缓存流程定义
+					ProcessDefinition pd = null;
+
+					if (processDefinitionMap.get(p.getProcessDefinitionId()) == null) {
+
+						pd = processEngineFactoryBean
+								.getProcessEngineConfiguration()
+								.getRepositoryService()
+								.getProcessDefinition(
+										p.getProcessDefinitionId());
+						processDefinitionMap
+								.put(p.getProcessDefinitionId(), pd);
+					} else {
+						pd = processDefinitionMap.get(p
+								.getProcessDefinitionId());
+					}
+					if (pd != null) {
+						po.put("processDefinitionName", pd.getName());
+					}
+					Rows.add(po);
 				}
 			}
 
@@ -82,11 +107,13 @@ public class TaskController {
 		Subject currentUser = SecurityUtils.getSubject();
 		User user = (User) currentUser.getSession().getAttribute("user");// 当前用户
 
+		Map<String, ProcessDefinition> processDefinitionMap = new HashMap<String, ProcessDefinition>();// 流程定义缓存
+
 		// 查询已归档任务
 		HistoricTaskInstanceQuery query = processEngineFactoryBean
 				.getProcessEngineConfiguration().getHistoryService()
 				.createHistoricTaskInstanceQuery().taskAssignee(user.getId())
-				.orderByHistoricTaskInstanceEndTime().desc();
+				.orderByHistoricActivityInstanceStartTime().desc();
 
 		try {
 			JSONObject o = new JSONObject();
@@ -97,7 +124,23 @@ public class TaskController {
 			JSONArray Rows = new JSONArray();
 			if (list != null && list.size() > 0) {
 				for (HistoricTaskInstance p : list) {
-					Rows.add(new JSONObject()
+					// 缓存流程定义
+					ProcessDefinition pd = null;
+					if (processDefinitionMap.get(p.getProcessDefinitionId()) == null) {
+
+						pd = processEngineFactoryBean
+								.getProcessEngineConfiguration()
+								.getRepositoryService()
+								.getProcessDefinition(
+										p.getProcessDefinitionId());
+						processDefinitionMap
+								.put(p.getProcessDefinitionId(), pd);
+					} else {
+						pd = processDefinitionMap.get(p
+								.getProcessDefinitionId());
+					}
+
+					JSONObject po = new JSONObject()
 							.element("id", p.getId())
 							.element("endTime", p.getEndTime())
 							// 完成时间
@@ -108,8 +151,12 @@ public class TaskController {
 							.element("processDefinitionId",
 									p.getProcessDefinitionId())// 流程定义ID
 							.element("processInstanceId",
-									p.getProcessInstanceId())// 流程实例ID
-					);
+									p.getProcessInstanceId());// 流程实例ID;
+
+					if (pd != null) {
+						po.put("processDefinitionName", pd.getName());
+					}
+					Rows.add(po);
 				}
 			}
 
