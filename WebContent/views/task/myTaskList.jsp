@@ -12,6 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/TaskDwr.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ActivityDwr.js'></script>
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
 
 <jsp:include  page="../../css.jsp"  flush="true" />
@@ -65,7 +66,12 @@ $(function() {
                 var tr =  $("<tr/>").appendTo(  $(table) );
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );
                 
-                var imgDiv =$("<div/>").appendTo(  $(td) ).ProcessDiagram({processInstanceId:row.processInstanceId});//显示流程图
+                var imgDiv =$("<div/>").appendTo(  $(td) ).ProcessDiagram({
+                	processInstanceId:row.processInstanceId,
+                	processDefinitionId:row.processDefinitionId,
+                	offsetTop:-50,
+                	offsetLeft:3
+                });//显示流程图
                 
                 
                 
@@ -123,8 +129,12 @@ $(function() {
                 var table =  $("<table width='100%'/>").appendTo(  $(detailPanel) );
                 var tr =  $("<tr/>").appendTo(  $(table) );
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );
-                var imgDiv =$("<div/>").appendTo(  $(td) ).ProcessDiagram({processInstanceId:row.processInstanceId});//显示流程图
-                
+                var imgDiv =$("<div/>").appendTo(  $(td) ).ProcessDiagram({
+                	processInstanceId:row.processInstanceId,
+                	processDefinitionId:row.processDefinitionId,
+                	offsetTop:-50,
+                	offsetLeft:3
+                });//显示流程图
                 
                 
         	}

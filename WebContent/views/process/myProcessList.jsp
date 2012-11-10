@@ -12,6 +12,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
 <jsp:include  page="../../css.jsp"  flush="true" />
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ActivityDwr.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/static/scripts/activiti/ProcessDiagram.js'></script>
+
 <style type="text/css">
 body {
 	font-size: 12px;
@@ -47,10 +51,12 @@ $(function() {
                 var table =  $("<table width='100%'/>").appendTo(  $(detailPanel) );
                 var tr =  $("<tr/>").appendTo(  $(table) );
                 var td =  $("<td align='center'/>").appendTo(  $(tr) );
-                var img = $("<img/>").appendTo(  $(td) );
-                
-                img.attr("src" ,"<%=contextPath%>/restful/process/processInstance/diagram/"+row.id+"/?rand="+new Date().getTime());//显示流程图
-                
+                var imgDiv =$("<div/>").appendTo(  $(td) ).ProcessDiagram({
+                	processInstanceId:row.id,
+                	processDefinitionId:row.processDefinitionId,
+                	offsetTop:-20,
+                	offsetLeft:3
+                });//显示流程图
                 
                 
         	}
