@@ -48,14 +48,12 @@ $(function() {
                
                 
                 
-                var table =  $("<table width='100%'/>").appendTo(  $(detailPanel) );
-                var tr =  $("<tr/>").appendTo(  $(table) );
-                var td =  $("<td align='center'/>").appendTo(  $(tr) );
-                var imgDiv =$("<div/>").appendTo(  $(td) ).ProcessDiagram({
+        		var imgDiv = $(detailPanel).css("overflow","hidden").ProcessDiagram({
+                	title:"流程图",
                 	processInstanceId:row.id,
                 	processDefinitionId:row.processDefinitionId,
-                	offsetTop:-20,
-                	offsetLeft:3
+                	offsetTop:-19,
+                	offsetLeft:4
                 });//显示流程图
                 
                 

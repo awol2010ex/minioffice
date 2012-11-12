@@ -41,11 +41,18 @@ $(function() {
 	//被分派任务
 	g_assignee=$("#grid_assignee").ligerGrid({
         columns: [ 
-              { display: 'id', name: 'id', width: "15%",isAllowHide: true },
+              
               { display: '任务创建时间', name: 'createTime', width: "15%",isAllowHide: true ,type:'date'},
               { display: '处理时间', name: 'dueDate', width: "15%",isAllowHide: true,type:'date' },
               { display: '任务名称', name: 'name', width: "15%",isAllowHide: true },
-              { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true }
+              { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true },
+              { display: '操作', name: 'id', width: "15%",isAllowHide: true,
+             	 render :function(row,i){
+             		   return   "<button  onclick=\"commitTask('"+row.id+"')\"  >审批</button>"
+             		 
+             	 }
+               
+               }
         ],
         url: "<%=contextPath%>/restful/task/mytask/assignee/list/",
         sortName: 'id',
@@ -62,34 +69,15 @@ $(function() {
                
                 
                 
-                var table =  $("<table width='100%'/>").appendTo(  $(detailPanel) );
-                var tr =  $("<tr/>").appendTo(  $(table) );
-                var td =  $("<td align='center'/>").appendTo(  $(tr) );
                 
-                var imgDiv =$("<div/>").appendTo(  $(td) ).ProcessDiagram({
+                var imgDiv = $(detailPanel).css("overflow","hidden").ProcessDiagram({
+                	title:"流程图",
                 	processInstanceId:row.processInstanceId,
                 	processDefinitionId:row.processDefinitionId,
-                	offsetTop:-50,
-                	offsetLeft:3
+                	offsetTop:-45,
+                	offsetLeft:6
                 });//显示流程图
                 
-                
-                
-                var tr =  $("<tr/>").appendTo(  $(table) );
-                var td =  $("<td align='center'/>").appendTo(  $(tr) );
-                var button = $("<button>审批任务</button>").appendTo(  $(td) );
-                button.data("row",row);
-                button.click(function(){
-                	var _row =$(this).data("row"); 
-                	//审批任务流程
-                	TaskDwr.commitTask(_row.id ,function(result){
-               		   if(result){
-                         alert("审批成功");
-                       }else{
-                         alert("审批失败");
-                       }
-                	});
-                });
                 
                 
         	}
@@ -126,14 +114,12 @@ $(function() {
                
                 
                 
-                var table =  $("<table width='100%'/>").appendTo(  $(detailPanel) );
-                var tr =  $("<tr/>").appendTo(  $(table) );
-                var td =  $("<td align='center'/>").appendTo(  $(tr) );
-                var imgDiv =$("<div/>").appendTo(  $(td) ).ProcessDiagram({
+        		var imgDiv = $(detailPanel).css("overflow","hidden").ProcessDiagram({
+                	title:"流程图",
                 	processInstanceId:row.processInstanceId,
                 	processDefinitionId:row.processDefinitionId,
-                	offsetTop:-50,
-                	offsetLeft:3
+                	offsetTop:-45,
+                	offsetLeft:6
                 });//显示流程图
                 
                 
@@ -145,7 +131,21 @@ $(function() {
 	
 	
 	 $("#navtab1").ligerTab(); //标签页
+	 
+	
 });
+
+function commitTask(taskId){
+	 
+ 	//审批任务流程
+ 	TaskDwr.commitTask(taskId ,function(result){
+		   if(result){
+          alert("审批成功");
+        }else{
+          alert("审批失败");
+        }
+ 	});
+ }
 </script>
 </head>
 <body>
