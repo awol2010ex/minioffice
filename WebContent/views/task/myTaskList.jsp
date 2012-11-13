@@ -70,14 +70,12 @@ $(function() {
                 
                 
                 
-                var imgDiv = $(detailPanel).css("overflow","hidden").ProcessDiagram({
-                	title:"流程图",
-                	processInstanceId:row.processInstanceId,
-                	processDefinitionId:row.processDefinitionId,
-                	offsetTop:-45,
-                	offsetLeft:6
-                });//显示流程图
                 
+                var _iframe =$("<iframe frameborder='0'/>").attr("id",new Date().getTime()).appendTo($(detailPanel));
+                //流程图链接
+                  var url ="<%=contextPath%>/views/process/diagram/processDiagram.jsp?processInstanceId="+row.processInstanceId+"&processDefinitionId="+row.processDefinitionId+"&frameId="+_iframe.attr("id");
+                  //加载流程图
+                  _iframe.attr("src",url);
                 
                 
         	}
@@ -114,13 +112,11 @@ $(function() {
                
                 
                 
-        		var imgDiv = $(detailPanel).css("overflow","hidden").ProcessDiagram({
-                	title:"流程图",
-                	processInstanceId:row.processInstanceId,
-                	processDefinitionId:row.processDefinitionId,
-                	offsetTop:-45,
-                	offsetLeft:6
-                });//显示流程图
+        		var _iframe =$("<iframe frameborder='0'/>").attr("id",new Date().getTime()).appendTo($(detailPanel));
+                //流程图链接
+                  var url ="<%=contextPath%>/views/process/diagram/processDiagram.jsp?processInstanceId="+row.processInstanceId+"&processDefinitionId="+row.processDefinitionId+"&frameId="+_iframe.attr("id");
+                  //加载流程图
+                  _iframe.attr("src",url);
                 
                 
         	}

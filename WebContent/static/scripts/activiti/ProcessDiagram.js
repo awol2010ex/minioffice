@@ -32,7 +32,7 @@ $.fn.ProcessDiagram=function(p){
 		
 		var groupBox=$("<fieldset style='padding:20px;border-color:#E2DED6;border-width:1px;border-style:Solid;'></fieldset>").appendTo(g.ProcessDiagram);
 		
-		groupBox.append("<legend  style='color:#333333;font-size:0.8em;font-weight:bold;'>流程图</legend>");
+		groupBox.append("<legend  style='color:#333333;font-size:0.8em;font-weight:bold;'>"+g.p.title+"</legend>");
 		
 		// 显示流程图
 		var img = $("<img/>").appendTo(  $(groupBox) ).data({
@@ -44,13 +44,13 @@ $.fn.ProcessDiagram=function(p){
 			offsetTop:g.p.offsetTop// 偏移
 			,
 			offsetLeft:g.p.offsetLeft// 偏移
+		   ,p:g.p
 		});
         
 		img.load(function(){
 	
 			    var img_offset ={top:getElementTop($(this)[0]),left:getElementLeft($(this)[0])};// 图片坐标
 			    
-			    debugger;
 			    //设置外层大小
 			    $(this).parent().parent().css({
 			    	height:$(this).height()+50,
@@ -126,6 +126,13 @@ $.fn.ProcessDiagram=function(p){
 			    	            var a= me.activityDivMap[ha.activityId];
 			    	            var flagImg =$("<img  src='"+__CONTEXT_PATH+"/static/images/flag.png'  style='width:12px;height:12px;'>").appendTo(a);
 			    		  }
+			    	 }
+			    	 
+			    	 
+			    	 //执行加载后方法
+			    	 var  func_afterLoadDiagram  =me.data("p").afterLoadDiagram ;
+			    	 if(func_afterLoadDiagram ){
+			    		 func_afterLoadDiagram();
 			    	 }
 			    });
 		});

@@ -12,9 +12,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
 <jsp:include  page="../../css.jsp"  flush="true" />
-<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ActivityDwr.js'></script>
-<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
-<script type='text/javascript' src='<%=request.getContextPath() %>/static/scripts/activiti/ProcessDiagram.js'></script>
 
 <style type="text/css">
 body {
@@ -48,15 +45,12 @@ $(function() {
                
                 
                 
-        		var imgDiv = $(detailPanel).css("overflow","hidden").ProcessDiagram({
-                	title:"流程图",
-                	processInstanceId:row.id,
-                	processDefinitionId:row.processDefinitionId,
-                	offsetTop:-19,
-                	offsetLeft:4
-                });//显示流程图
                 
-                
+                var _iframe =$("<iframe frameborder='0'/>").attr("id",new Date().getTime()).appendTo($(detailPanel));
+              //流程图链接
+                var url ="<%=contextPath%>/views/process/diagram/processDiagram.jsp?processInstanceId="+row.id+"&processDefinitionId="+row.processDefinitionId+"&frameId="+_iframe.attr("id");
+                //加载流程图
+                _iframe.attr("src",url);
         	}
         	
         }
