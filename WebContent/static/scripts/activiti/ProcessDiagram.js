@@ -45,6 +45,7 @@ $.fn.ProcessDiagram=function(p){
 			,
 			offsetLeft:g.p.offsetLeft// 偏移
 		   ,p:g.p
+		   ,g:g
 		});
         
 		img.load(function(){
@@ -96,6 +97,9 @@ $.fn.ProcessDiagram=function(p){
 			    	            if(!me["activityDivMap"]){
 			    	            	me["activityDivMap"]={};
 			    	            }
+			    	            if(!me["activityMap"]){
+			    	            	me["activityMap"]={};
+			    	            }
 			    	          
 			    	            // 节点隐藏DIV层
 			    	            var a=$("<div></div>").data({activityId:activity.id})
@@ -114,6 +118,7 @@ $.fn.ProcessDiagram=function(p){
 			    	                  }).attr("title",activity.properties.name);// 显示环节名称
 			    	            
 			    	           me.activityDivMap[activity.id]=a;// 缓存DIV层
+			    	           me.activityMap[activity.id]=activity;// 缓存节点
 			    	        };
 			    	 }
 			    	 
@@ -134,6 +139,78 @@ $.fn.ProcessDiagram=function(p){
 			    	 if(func_afterLoadDiagram ){
 			    		 func_afterLoadDiagram();
 			    	 }
+			    	 
+			    	 
+			    	 //显示轨迹的按钮
+			    	 $("<img></img>")
+			    	 .data("activities",result.activities)//所有环节列表
+			         .attr({src:__CONTEXT_PATH+"/static/images/array_path_32.png",title:"查看轨迹"})
+			         .css({
+
+			             "position":"absolute",
+			             "zIndex":"2",
+			             "height":"32px",
+			             "width":"32px",
+			             "left":(img_offset.left+parseInt(me.data("offsetLeft"))+16)+"px",
+			             "top":(img_offset.top+parseInt(me.data("offsetTop"))-10)+"px",
+			             "borderColor":"#6BE04E",
+			             "borderWidth":"0px",
+			             "borderStyle":"solid"
+			         }).appendTo(me.data("g").ProcessDiagram)
+			          .dblclick(
+                               function(e){
+                                           //球初始位置
+                            	   if(!$(this).data("moveBall")){
+                            		   $(this).data("moveBall",$("<img></img>")
+                                       .appendTo(me.data("g").ProcessDiagram)
+                                       .attr({src:__CONTEXT_PATH+"/static/images/Inspiration_Orb_Icon_005.png"})
+                                       .css({
+
+                                           "position":"absolute",
+                                           "zIndex":"2",
+                                           "height":"32px",
+                                           "width":"32px",
+                                           "left":(result.activities[0].x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
+ 			    	                      "top":(result.activities[0].y-minY+img_offset.top+parseInt(me.data("offsetTop")))+"px",
+                                           "borderColor":"#6BE04E",
+                                           "borderWidth":"0px",
+                                           "borderStyle":"solid"
+                                       }));
+                            		   
+                            	   }
+                            	   $(this).data("moveBall").show();//显示轨迹球
+                            	 //按时间顺序移动轨迹球
+                                   for(var i=0,s=result.historyActivitys.length;i<s;i++){
+                                       var activity=result.historyActivitys[i];
+                                       var node=me.activityMap[activity.activityId];
+                                       if(i>0){
+                                         $(this).data("moveBall").animate({
+                                           "left":(node.x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
+                                           "top":(node.y-minY+img_offset.top+parseInt(me.data("offsetTop")))+"px"
+                                         },1000);
+                                       }
+                                       else{
+                                    	   $(this).data("moveBall").css({
+                                               "left":(node.x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
+                                               "top":(node.y-minY+img_offset.top+parseInt(me.data("offsetTop")))+"px"
+                                             });
+                                       }
+                                   }
+
+                                   
+                                 //移动到最后一个任务(如果最后一个任务已完成)
+                                 if(result.historyActivitys[result.historyActivitys.length-1].endTime){
+                                   $(this).data("moveBall").animate({
+                                	   "left":(result.activities[result.activities.length-1].x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
+			    	                   "top":(result.activities[result.activities.length-1].y-minY+img_offset.top+parseInt(me.data("offsetTop")))+"px",
+                                   },1000);
+                                 }
+                                   //隐藏轨迹球
+                                   $(this).data("moveBall").hide(1000);
+                               }
+                     );
+			         
+			         ;
 			    });
 		});
 		

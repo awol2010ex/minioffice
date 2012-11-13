@@ -33,7 +33,6 @@ $(function() {
     	afterLoadDiagram:function(){
     		//自适应大小
     		var _frame=parent.$("#<%=request.getParameter("frameId")%>");
-    		console.log(_frame);
     		_frame.height(document.body.scrollHeight+"px");
     		_frame.width(document.body.scrollWidth+"px");
     	}
