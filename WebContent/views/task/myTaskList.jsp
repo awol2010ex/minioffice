@@ -68,16 +68,32 @@ $(function() {
         	onShowDetail: function(row, detailPanel,callback){
                
                 
-                
-                
-                
-                var _iframe =$("<iframe frameborder='0'/>").attr("id",new Date().getTime()).appendTo($(detailPanel));
+                var table =$("<table width='100%'></table>").appendTo($(detailPanel));
+                var tr = $("<tr></tr>").appendTo(table);
+                var td = $("<td></td>").appendTo(tr);
+                var _iframe =$("<iframe frameborder='0'/>").attr("id",new Date().getTime()).appendTo(td);
                 //流程图链接
                   var url ="<%=contextPath%>/views/process/diagram/processDiagram.jsp?processInstanceId="+row.processInstanceId+"&processDefinitionId="+row.processDefinitionId+"&frameId="+_iframe.attr("id");
                   //加载流程图
                   _iframe.attr("src",url);
                 
-                
+                  var tr = $("<tr></tr>").appendTo(table);
+                  var td = $("<td align='center'  style='padding:10px'></td>").appendTo(tr);
+                  //打开任务表单
+                  TaskDwr.getFormData(row.id,function(result){
+                	  if(result && result.length>0){
+                		    var form_table =$("<table width='50%'  border='1'></table>").appendTo(td);//表格用的table
+                		    for(var i=0,s= result.length;i<s ;i++){
+                		    	  var  form_tr=$("<tr></tr>").appendTo(form_table);
+                		    	  
+                		    	  var form_td1 =$("<td style='padding:10px'></td>").appendTo(form_tr).text(result[i].name+":");
+                		    	  var form_td2 =$("<td style='padding:10px'></td>").appendTo(form_tr);
+                		    	  $("<input type='text'    />").appendTo(form_td2).val(result[i].value);
+                		    }
+                	  }
+                  });
+                  
+                  
         	}
         	
         }
