@@ -1,6 +1,7 @@
 package com.minioffice.task.dwr;
 
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -25,14 +26,15 @@ public class TaskDwr {
 	private ProcessEngineFactoryBean processEngineFactoryBean;// 流程操作部件
 
 	// 审批任务通过
-	public boolean commitTask(String taskId) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public boolean commitTask(String taskId  ,Map varset) {
 		try {
 			Subject currentUser = SecurityUtils.getSubject();
 			User user = (User) currentUser.getSession().getAttribute("user");
 			processEngineFactoryBean.getProcessEngineConfiguration()
 					.getTaskService().claim(taskId, user.getId());// 领取任务
 			processEngineFactoryBean.getProcessEngineConfiguration()
-					.getTaskService().complete(taskId);// 审批任务
+					.getTaskService().complete(taskId,varset);// 审批任务
 		} catch (Exception e) {
 			logger.error("", e);
 			return false;

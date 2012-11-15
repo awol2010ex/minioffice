@@ -31,6 +31,10 @@ var g_assignee=null;//分派任务列表
 
 var g_history=null;//已归档任务列表
 
+var formDataMap={};//表单映射
+
+var formTableMap={};//表单TABLE缓存
+
 
 //我的任务列表
 $(function() {
@@ -82,14 +86,20 @@ $(function() {
                   //打开任务表单
                   TaskDwr.getFormData(row.id,function(result){
                 	  if(result && result.length>0){
+                		  
+                		  formDataMap[row.id]=result; //表单数据缓存
+                		  
+                		  
                 		    var form_table =$("<table width='50%'  border='1'></table>").appendTo(td);//表格用的table
                 		    for(var i=0,s= result.length;i<s ;i++){
                 		    	  var  form_tr=$("<tr></tr>").appendTo(form_table);
                 		    	  
                 		    	  var form_td1 =$("<td style='padding:10px'></td>").appendTo(form_tr).text(result[i].name+":");
                 		    	  var form_td2 =$("<td style='padding:10px'></td>").appendTo(form_tr);
-                		    	  $("<input type='text'    />").appendTo(form_td2).val(result[i].value);
+                		    	  $("<input type='text'    />").addClass("field_"+result[i].id).appendTo(form_td2).val(result[i].value);
                 		    }
+                		    
+                		    formTableMap[row.id]=form_table;//表单表格缓存
                 	  }
                   });
                   
@@ -148,15 +158,31 @@ $(function() {
 });
 
 function commitTask(taskId){
+	 var _formData= formDataMap[taskId];//表单数据
+	 var _formTable =formTableMap[taskId];//表单表格
+	 
+	 var varset ={};//提交变量
+	 
+	 if(_formData &&_formData.length>0&& _formTable){
+		 
+		   for(var i=0,s= _formData.length;i<s;i++){
+			   var key =_formData[i].id;
+			   var var_value=_formTable.find(" .field_"+key).val();//变量值
+			   varset[key]=var_value;//设置变量值
+		   }
+	 }
+	 
+	 
 	 
  	//审批任务流程
- 	TaskDwr.commitTask(taskId ,function(result){
+ 	TaskDwr.commitTask(taskId ,varset,function(result){
 		   if(result){
           alert("审批成功");
         }else{
           alert("审批失败");
         }
  	});
+	 
  }
 </script>
 </head>
