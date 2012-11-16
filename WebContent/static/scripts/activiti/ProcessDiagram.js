@@ -119,6 +119,26 @@ $.fn.ProcessDiagram=function(p){
 			    	            
 			    	           me.activityDivMap[activity.id]=a;// 缓存DIV层
 			    	           me.activityMap[activity.id]=activity;// 缓存节点
+			    	           
+			    	           //显示路由边
+			    	           if(activity.transitions && activity.transitions.length>0 ){
+			    	        	     for(var k=0,m=activity.transitions.length;k<m;k++){
+			    	        	    	   var  trn=activity.transitions[k]
+			    	        	    	   var trn_x =(activity.x+trn.destination.x)/2;///路由边x
+			    	        	    	   var trn_y =(activity.y+trn.destination.y)/2;//路由边y
+			    	        	    	   
+			    	        	    	   if(trn.properties.name)
+			    	        	    	   var trn_a=$("<a></a>").text(trn.properties.name)// 显示路由名称
+					    	                  .appendTo(me.parent())
+					    	                  .css({
+
+					    	                      "position":"absolute",
+					    	                      "zIndex":"999",
+					    	                      "left":(trn_x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
+					    	                      "top":(trn_y-minY+img_offset.top+parseInt(me.data("offsetTop")))+"px"
+					    	                  });
+			    	        	     }
+			    	           }
 			    	        };
 			    	 }
 			    	 
