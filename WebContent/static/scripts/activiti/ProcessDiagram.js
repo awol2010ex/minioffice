@@ -107,7 +107,7 @@ $.fn.ProcessDiagram=function(p){
 			    	                  .css({
 
 			    	                      "position":"absolute",
-			    	                      "zIndex":"999",
+			    	                      "zIndex":"10",
 			    	                      "height":activity.height+"px",
 			    	                      "width":activity.width+"px",
 			    	                      "left":(activity.x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
@@ -116,6 +116,14 @@ $.fn.ProcessDiagram=function(p){
 			    	                      "borderWidth":"0px",
 			    	                      "borderStyle":"solid"
 			    	                  }).attr("title",activity.properties.name);// 显示环节名称
+			    	            
+			    	            
+			    	          //节点右键方法
+						      var  func_contextMenuNode  =me.data("p").contextMenuNode ;
+			    	          if(func_contextMenuNode){
+			    	        	  a.bind("contextmenu",   func_contextMenuNode );
+			    	          }
+			    	            
 			    	            
 			    	           me.activityDivMap[activity.id]=a;// 缓存DIV层
 			    	           me.activityMap[activity.id]=activity;// 缓存节点

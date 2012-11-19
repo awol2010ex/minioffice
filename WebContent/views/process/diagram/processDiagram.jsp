@@ -23,7 +23,11 @@ body {
 </style>	
 <script type='text/javascript'>
 //流程图显示页面
+var  activity_menu =null;
 $(function() {
+	
+	
+	
 	$("body").ProcessDiagram({
     	title:"流程图",
     	processInstanceId:"<%=request.getParameter("processInstanceId") %>",
@@ -35,8 +39,31 @@ $(function() {
     		var _frame=parent.$("#<%=request.getParameter("frameId")%>");
     		_frame.height(document.body.scrollHeight+"px");
     		_frame.width(document.body.scrollWidth+"px");
+    	},
+    	contextMenuNode:function(e){//右键菜单
+    		  var activityId  =$(this).data("activityId");
+    	      activity_menu.show({ top: e.pageY, left: e.pageX });
+    	      $(activity_menu.element).css("z-index", "90000").data("activityId",activityId);
+    	      return false;
     	}
     });//显示流程图
+    
+    //节点右键菜单
+	activity_menu= $.ligerMenu({
+		top : 100,
+		left : 100,
+		width : 120,
+		items : [ 
+		  {
+			text : '驳回',
+			click : function(){
+				var  activityId =$(activity_menu.element).data("activityId");//环节ID
+				alert(activityId);
+			}
+		  }
+
+		]
+	});
 });
 </script>
 </head>
