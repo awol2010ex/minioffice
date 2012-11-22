@@ -174,6 +174,7 @@ public class ProcessController {
 		HistoricProcessInstanceQuery query = processEngineFactoryBean
 				.getProcessEngineConfiguration().getHistoryService()
 				.createHistoricProcessInstanceQuery().startedBy(user.getId())
+				.unfinished()
 				.orderByProcessInstanceStartTime().desc();
 		try {
 			JSONObject o = new JSONObject();
