@@ -29,6 +29,8 @@ body {
 <script type='text/javascript'>
 var g_assignee=null;//分派任务列表
 
+var g_candidate=null;//邀请任务列表
+
 var g_history=null;//已归档任务列表
 
 var formDataMap={};//表单映射
@@ -69,47 +71,43 @@ $(function() {
         pageSizeOptions: [5, 10, 15],
         detail: { 
         	//显示明细
-        	onShowDetail: function(row, detailPanel,callback){
-               
-                
-                var table =$("<table width='100%'></table>").appendTo($(detailPanel));
-                var tr = $("<tr></tr>").appendTo(table);
-                var td = $("<td></td>").appendTo(tr);
-                var _iframe =$("<iframe frameborder='0'/>").attr("id",new Date().getTime()).appendTo(td);
-                //流程图链接
-                  var url ="<%=contextPath%>/views/process/diagram/processDiagram.jsp?processInstanceId="+row.processInstanceId+"&processDefinitionId="+row.processDefinitionId+"&frameId="+_iframe.attr("id");
-                  //加载流程图
-                  _iframe.attr("src",url);
-                
-                  var tr = $("<tr></tr>").appendTo(table);
-                  var td = $("<td align='center'  style='padding:10px'></td>").appendTo(tr);
-                  //打开任务表单
-                  TaskDwr.getFormData(row.id,function(result){
-                	  if(result && result.length>0){
-                		  
-                		  formDataMap[row.id]=result; //表单数据缓存
-                		  
-                		  
-                		    var form_table =$("<table width='50%'  border='1'></table>").appendTo(td);//表格用的table
-                		    for(var i=0,s= result.length;i<s ;i++){
-                		    	  var  form_tr=$("<tr></tr>").appendTo(form_table);
-                		    	  
-                		    	  var form_td1 =$("<td style='padding:10px'></td>").appendTo(form_tr).text(result[i].name+":");
-                		    	  var form_td2 =$("<td style='padding:10px'></td>").appendTo(form_tr);
-                		    	  $("<input type='text'    />").addClass("field_"+result[i].id).appendTo(form_td2).val(result[i].value);
-                		    }
-                		    
-                		    formTableMap[row.id]=form_table;//表单表格缓存
-                	  }
-                  });
-                  
-                  
-        	}
+        	onShowDetail: showTaskDetail
         	
         }
 
     });
-	 
+	//被邀请任务
+	g_candidate=$("#grid_candidate").ligerGrid({
+        columns: [ 
+              
+              { display: '任务创建时间', name: 'createTime', width: "15%",isAllowHide: true ,type:'date'},
+              { display: '处理时间', name: 'dueDate', width: "15%",isAllowHide: true,type:'date' },
+              { display: '任务名称', name: 'name', width: "15%",isAllowHide: true },
+              { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true },
+              { display: '操作', name: 'id', width: "15%",isAllowHide: true,
+             	 render :function(row,i){
+             		   return   "<button  onclick=\"commitTask('"+row.id+"')\"  >审批</button>"
+             		 
+             	 }
+               
+               }
+        ],
+        url: "<%=contextPath%>/restful/task/mytask/candidate/list/",
+        sortName: 'id',
+        showTitle: false,
+        dataAction:'server',
+        pageSize: 5,
+        height:"90%",
+        enabledEdit: true,
+        dateFormat:'yyyy-MM-dd hh:mm:ss',
+        pageSizeOptions: [5, 10, 15],
+        detail: { 
+        	//显示明细
+        	onShowDetail: showTaskDetail
+        	
+        }
+
+    });
 	 
 	 
 	//已归档任务
@@ -157,6 +155,44 @@ $(function() {
 	
 });
 
+//显示需操作任务表单
+function showTaskDetail(row, detailPanel,callback){
+
+    var table =$("<table width='100%'></table>").appendTo($(detailPanel));
+    var tr = $("<tr></tr>").appendTo(table);
+    var td = $("<td></td>").appendTo(tr);
+    var _iframe =$("<iframe frameborder='0'/>").attr("id",new Date().getTime()).appendTo(td);
+    //流程图链接
+      var url ="<%=contextPath%>/views/process/diagram/processDiagram.jsp?processInstanceId="+row.processInstanceId+"&processDefinitionId="+row.processDefinitionId+"&taskId="+row.id+"&frameId="+_iframe.attr("id");
+      //加载流程图
+      _iframe.attr("src",url);
+    
+      var tr = $("<tr></tr>").appendTo(table);
+      var td = $("<td align='center'  style='padding:10px'></td>").appendTo(tr);
+      //打开任务表单
+      TaskDwr.getFormData(row.id,function(result){
+    	  if(result && result.length>0){
+    		  
+    		  formDataMap[row.id]=result; //表单数据缓存
+    		  
+    		  
+    		    var form_table =$("<table width='50%'  border='1'></table>").appendTo(td);//表格用的table
+    		    for(var i=0,s= result.length;i<s ;i++){
+    		    	  var  form_tr=$("<tr></tr>").appendTo(form_table);
+    		    	  
+    		    	  var form_td1 =$("<td style='padding:10px'></td>").appendTo(form_tr).text(result[i].name+":");
+    		    	  var form_td2 =$("<td style='padding:10px'></td>").appendTo(form_tr);
+    		    	  $("<input type='text'    />").addClass("field_"+result[i].id).appendTo(form_td2).val(result[i].value);
+    		    }
+    		    
+    		    formTableMap[row.id]=form_table;//表单表格缓存
+    	  }
+      });
+      
+}
+
+
+//审批任务
 function commitTask(taskId){
 	 var _formData= formDataMap[taskId];//表单数据
 	 var _formTable =formTableMap[taskId];//表单表格
@@ -193,6 +229,10 @@ function commitTask(taskId){
         <div  title="分派任务" showClose="false">
             <!-- 被分派任务 -->
             <div id="grid_assignee" style="width:99% ;height:90%;"></div>
+        </div>
+         <div  title="被邀请任务" showClose="false">
+            <!-- 被邀请任务 -->
+            <div id="grid_candidate" style="width:99% ;height:90%;"></div>
         </div>
         <div  title="已归档任务" showClose="false">
             <!-- 已归档任务 -->

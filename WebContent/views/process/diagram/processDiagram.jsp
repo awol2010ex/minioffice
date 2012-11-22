@@ -14,6 +14,7 @@
 <jsp:include  page="../../../css.jsp"  flush="true" />
 
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ActivityDwr.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/TaskDwr.js'></script>
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
 <script type='text/javascript' src='<%=request.getContextPath() %>/static/scripts/activiti/ProcessDiagram.js'></script>
 <style type="text/css">
@@ -58,7 +59,21 @@ $(function() {
 			text : '驳回',
 			click : function(){
 				var  activityId =$(activity_menu.element).data("activityId");//环节ID
-				alert(activityId);
+				var  taskId =null;//当前任务ID
+				<%if(request.getParameter("taskId")!=null){%>
+				     taskId  ="<%=request.getParameter("taskId")%>";
+				<%}%>
+				
+				if(taskId){
+					  //驳回
+					  TaskDwr.rejectTask(taskId ,activityId ,function(result){
+						  if(result){
+					          alert("驳回成功");
+					      }else{
+					          alert("驳回失败");
+					      }
+					  });
+				}
 			}
 		  }
 

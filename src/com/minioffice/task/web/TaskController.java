@@ -99,6 +99,75 @@ public class TaskController {
 			logger.error("", e);
 		}
 	}
+	
+	
+	/* 我的任务(被邀请)列表 */
+	@RequestMapping(value = "/mytask/candidate/list/")
+	public void getMyCandidateTaskList(int page, int pagesize,
+			HttpServletResponse response) {
+		Subject currentUser = SecurityUtils.getSubject();
+		User user = (User) currentUser.getSession().getAttribute("user");// 当前用户
+
+		// 查询任务
+		TaskQuery query = processEngineFactoryBean
+				.getProcessEngineConfiguration().getTaskService()
+				.createTaskQuery().taskCandidateUser(user.getId())
+				.orderByTaskCreateTime().desc();
+
+		Map<String, ProcessDefinition> processDefinitionMap = new HashMap<String, ProcessDefinition>();// 流程定义缓存
+
+		try {
+			JSONObject o = new JSONObject();
+			o.put("Total", query.count());
+
+			List<Task> list = query.listPage((page - 1) * pagesize, pagesize);
+			JSONArray Rows = new JSONArray();
+			if (list != null && list.size() > 0) {
+				for (Task p : list) {
+					JSONObject po = new JSONObject()
+							.element("id", p.getId())
+							.element("createTime", p.getCreateTime())
+							// 创建时间
+							.element("dueDate", p.getDueDate())
+							// 处理时间
+							.element("name", p.getName())
+							// 任务名称
+							.element("processDefinitionId",
+									p.getProcessDefinitionId())// 流程定义ID
+							.element("processInstanceId",
+									p.getProcessInstanceId());// 流程实例ID
+
+					// 缓存流程定义
+					ProcessDefinition pd = null;
+
+					if (processDefinitionMap.get(p.getProcessDefinitionId()) == null) {
+
+						pd = processEngineFactoryBean
+								.getProcessEngineConfiguration()
+								.getRepositoryService()
+								.getProcessDefinition(
+										p.getProcessDefinitionId());
+						processDefinitionMap
+								.put(p.getProcessDefinitionId(), pd);
+					} else {
+						pd = processDefinitionMap.get(p
+								.getProcessDefinitionId());
+					}
+					if (pd != null) {
+						po.put("processDefinitionName", pd.getName());
+					}
+					Rows.add(po);
+				}
+			}
+
+			o.put("Rows", Rows);
+			response.getWriter().print(o.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("", e);
+		}
+	}
+	
 
 	/* 我的任务(已归档)列表 */
 	@RequestMapping(value = "/mytask/history/list/")
