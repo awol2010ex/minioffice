@@ -79,9 +79,9 @@ public class JumpCommand implements Command<Object>, Serializable {
 		try {
 			execution.take(targetActiviti.getIncomingTransitions().iterator()
 					.next());
-			//删除当前任务
+			//删除当前任务(删除理由是驳回)
 			  Context.getCommandContext()
-	          .getTaskManager().deleteTask(taskId, false);
+	          .getTaskManager().deleteTask(taskId, "reject",false);
 			
 			return true;
 		} catch (Exception e) {
