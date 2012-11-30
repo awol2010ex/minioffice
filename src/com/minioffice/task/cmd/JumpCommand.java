@@ -11,10 +11,14 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 //跳转命令
 public class JumpCommand implements Command<Object>, Serializable {
-
+	private final static Logger logger = LoggerFactory
+			.getLogger(JumpCommand.class);
 	/**
 	 * 
 	 */
@@ -80,12 +84,19 @@ public class JumpCommand implements Command<Object>, Serializable {
 			execution.take(targetActiviti.getIncomingTransitions().iterator()
 					.next());
 			//删除当前任务(删除理由是驳回)
-			  Context.getCommandContext()
-	          .getTaskManager().deleteTask(taskId, "reject",false);
+			 TaskEntity task = Context
+				      .getCommandContext()
+				      .getTaskManager()
+				      .findTaskById(taskId);
+			 if(task!=null  && !task.isDeleted()){
 			
+			
+			  Context.getCommandContext()
+	          .getTaskManager().deleteTask(task, "reject",false);
+			 }
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("",e);
 			return false;
 		}
 	}
