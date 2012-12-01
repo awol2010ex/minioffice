@@ -57,6 +57,15 @@ $(function() {
 
     });
 });
+
+
+//自适应高度
+function afterLoadDiagram(frameId){
+	    var  f= $("#"+frameId);
+	    f.parent().height(f.height()+"px");
+	    f.parent().height((f.height()+100)+"px");
+}
+
 </script>
 </head>
 <body>

@@ -49,9 +49,10 @@ $(function() {
         columns: [ 
               
               { display: '任务创建时间', name: 'createTime', width: "15%",isAllowHide: true ,type:'date'},
-              { display: '处理时间', name: 'dueDate', width: "15%",isAllowHide: true,type:'date' },
               { display: '任务名称', name: 'name', width: "15%",isAllowHide: true },
               { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true },
+              { display: '流程定义ID', name: 'processDefinitionId', width: "15%",isAllowHide: true },
+              { display: '流程实例ID', name: 'processInstanceId', width: "15%",isAllowHide: true },
               { display: '操作', name: 'id', width: "15%",isAllowHide: true,
              	 render :function(row,i){
              		   return   "<button  onclick=\"commitTask('"+row.id+"')\"  >审批</button>"
@@ -81,9 +82,10 @@ $(function() {
         columns: [ 
               
               { display: '任务创建时间', name: 'createTime', width: "15%",isAllowHide: true ,type:'date'},
-              { display: '处理时间', name: 'dueDate', width: "15%",isAllowHide: true,type:'date' },
               { display: '任务名称', name: 'name', width: "15%",isAllowHide: true },
               { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true },
+              { display: '流程定义ID', name: 'processDefinitionId', width: "15%",isAllowHide: true },
+              { display: '流程实例ID', name: 'processInstanceId', width: "15%",isAllowHide: true },
               { display: '操作', name: 'id', width: "15%",isAllowHide: true,
              	 render :function(row,i){
              		   return   "<button  onclick=\"commitTask('"+row.id+"')\"  >审批</button>"
@@ -119,7 +121,9 @@ $(function() {
               { display: '完成时间', name: 'endTime', width: "15%",isAllowHide: true ,type:'date'},
               
               { display: '任务名称', name: 'name', width: "15%",isAllowHide: true },
-              { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true }
+              { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true },
+              { display: '流程定义ID', name: 'processDefinitionId', width: "15%",isAllowHide: true },
+              { display: '流程实例ID', name: 'processInstanceId', width: "15%",isAllowHide: true }
         ],
         url: "<%=contextPath%>/restful/task/mytask/history/list/",
         sortName: 'id',
@@ -191,6 +195,12 @@ function showTaskDetail(row, detailPanel,callback){
       
 }
 
+//自适应高度
+function afterLoadDiagram(frameId){
+	    var  f= $("#"+frameId);
+	    f.parent().height(f.height()+"px");
+	    f.parent().parent().parent().parent().parent().height((f.height()+100)+"px");
+}
 
 //审批任务
 function commitTask(taskId){

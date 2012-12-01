@@ -40,6 +40,9 @@ $(function() {
     		var _frame=parent.$("#<%=request.getParameter("frameId")%>");
     		_frame.height(document.body.scrollHeight+"px");
     		_frame.width(document.body.scrollWidth+"px");
+    		if(parent.afterLoadDiagram){
+    			parent.afterLoadDiagram("<%=request.getParameter("frameId")%>");
+    		}
     	},
     	contextMenuNode:function(e){//右键菜单
     		  var activityId  =$(this).data("activityId");
