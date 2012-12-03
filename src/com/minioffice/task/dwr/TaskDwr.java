@@ -1,6 +1,7 @@
 package com.minioffice.task.dwr;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.minioffice.task.cmd.JumpCommand;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 //流程操作DWR
 @RemoteProxy
 public class TaskDwr {
@@ -38,6 +41,22 @@ public class TaskDwr {
 			User user = (User) currentUser.getSession().getAttribute("user");
 			processEngineFactoryBean.getProcessEngineConfiguration()
 					.getTaskService().claim(taskId, user.getId());// 领取任务
+			
+			//逗号分割字符串转为列表型变量
+			Iterator  it =varset.keySet().iterator();
+			while(it.hasNext()){
+				String key =(String)it.next();
+				Object value = varset.get(key);
+				if(value!=null && value instanceof String){
+					   String[]  valueList=  value.toString().split(",");
+					   if( valueList!=null && valueList.length>1){
+						  List<String>   array_var =Arrays.asList(valueList);
+						  varset.put(key, array_var);
+					   }
+				}
+			}
+			
+			
 			processEngineFactoryBean.getProcessEngineConfiguration()
 					.getTaskService().complete(taskId, varset);// 审批任务
 		} catch (Exception e) {
@@ -60,8 +79,11 @@ public class TaskDwr {
 			for (FormProperty fp : pList) {
 				formArray.add(new JSONObject().element("id", fp.getId()) // ID
 						.element("name", fp.getName()) // 表单名
-						.element("type", fp.getType().getName()) // 类型
-						.element("value", fp.getValue())); // 值
+						.element("type", fp.getType()==null?"":fp.getType().getName()) // 类型
+						.element("value", fp.getValue())//默认值
+						)
+						
+						; // 值
 			}
 		}
 

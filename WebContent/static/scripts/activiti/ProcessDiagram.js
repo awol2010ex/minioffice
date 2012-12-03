@@ -212,16 +212,20 @@ $.fn.ProcessDiagram=function(p){
                                        var activity=result.historyActivitys[i];
                                        var node=me.activityMap[activity.activityId];
                                        if(i>0){
-                                         $(this).data("moveBall").animate({
-                                           "left":(node.x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
-                                           "top":(node.y-minY+img_offset.top+parseInt(me.data("offsetTop")))+"px"
-                                         },1000);
+                                    	   if(node && node.x && node.y){
+                                              $(this).data("moveBall").animate({
+                                                  "left":(node.x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
+                                                  "top":(node.y-minY+img_offset.top+parseInt(me.data("offsetTop")))+"px"
+                                              },1000);
+                                           }
                                        }
                                        else{
-                                    	   $(this).data("moveBall").css({
-                                               "left":(node.x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
-                                               "top":(node.y-minY+img_offset.top+parseInt(me.data("offsetTop")))+"px"
+                                    	   if(node && node.x && node.y){
+                                    	     $(this).data("moveBall").css({
+                                                 "left":(node.x-minX+img_offset.left+parseInt(me.data("offsetLeft")))+"px",
+                                                 "top":(node.y-minY+img_offset.top+parseInt(me.data("offsetTop")))+"px"
                                              });
+                                    	   }
                                        }
                                    }
 

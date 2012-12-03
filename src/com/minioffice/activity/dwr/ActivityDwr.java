@@ -13,84 +13,103 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.directwebremoting.annotations.RemoteProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 //流程环节操作DWR
 @RemoteProxy
 public class ActivityDwr {
-
+	private final static Logger logger = LoggerFactory
+			.getLogger(ActivityDwr.class);
 	@Autowired
 	private ProcessEngineFactoryBean processEngineFactoryBean;
 
 	// 显示//历史环节列表
 	public JSONObject getHistoryActivityList(String processInstanceId,
 			String processDefinfitionId) {
+
 		JSONObject result = new JSONObject();
+		try {
+			// 历史环节列表
+			List<HistoricActivityInstance> list = processEngineFactoryBean
+					.getProcessEngineConfiguration().getHistoryService()
+					.createHistoricActivityInstanceQuery()
+					.processInstanceId(processInstanceId)
+					.orderByHistoricActivityInstanceStartTime().asc().list();
 
-		// 历史环节列表
-		List<HistoricActivityInstance> list = processEngineFactoryBean
-				.getProcessEngineConfiguration().getHistoryService()
-				.createHistoricActivityInstanceQuery()
-				.processInstanceId(processInstanceId)
-				.orderByHistoricActivityInstanceStartTime().asc().list();
-
-		JSONArray historyActivitys = new JSONArray();
-		if (list != null && list.size() > 0) {
-			for (HistoricActivityInstance p : list) {
-				historyActivitys.add(new JSONObject().element("id", p.getId())
-						.element("activityId", p.getActivityId())// 环节ID
-						.element("activityName", p.getActivityName())// 环节名称
-						.element("startTime", p.getStartTime())// 开始时间
-						.element("endTime", p.getEndTime()));// 结束时间
+			JSONArray historyActivitys = new JSONArray();
+			if (list != null && list.size() > 0) {
+				for (HistoricActivityInstance p : list) {
+					historyActivitys.add(new JSONObject()
+							.element("id", p.getId())
+							.element("activityId", p.getActivityId())// 环节ID
+							.element("activityName", p.getActivityName())// 环节名称
+							.element("startTime", p.getStartTime())// 开始时间
+							.element("endTime", p.getEndTime()));// 结束时间
+				}
 			}
-		}
-		result.put("historyActivitys", historyActivitys);
+			result.put("historyActivitys", historyActivitys);
 
-		// 已部署的节点列表
-		ProcessDefinitionEntity latestProcessDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) processEngineFactoryBean
-				.getProcessEngineConfiguration().getRepositoryService())
-				.getDeployedProcessDefinition(processDefinfitionId);
-		List<ActivityImpl> activities = latestProcessDefinition.getActivities();
+			// 已部署的节点列表
+			ProcessDefinitionEntity latestProcessDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) processEngineFactoryBean
+					.getProcessEngineConfiguration().getRepositoryService())
+					.getDeployedProcessDefinition(processDefinfitionId);
+			List<ActivityImpl> activities = latestProcessDefinition
+					.getActivities();
 
-		JSONArray activitiesJSON = new JSONArray();
-		if (activities != null && activities.size() > 0) {
-			for (ActivityImpl ai : activities) {
+			JSONArray activitiesJSON = new JSONArray();
+			if (activities != null && activities.size() > 0) {
+				for (ActivityImpl ai : activities) {
 
-				List<PvmTransition> transitions = ai.getOutgoingTransitions();// 路由线
+					List<PvmTransition> transitions = ai
+							.getOutgoingTransitions();// 路由线
 
-				JSONArray transitionsJSON = new JSONArray();
+					JSONArray transitionsJSON = new JSONArray();
 
-				if (transitions != null && transitions.size() > 0) {
-					for (PvmTransition tr : transitions) {
-						TransitionImpl trl = (TransitionImpl) tr;
+					if (transitions != null && transitions.size() > 0) {
+						for (PvmTransition tr : transitions) {
+							TransitionImpl trl = (TransitionImpl) tr;
 
-						ActivityImpl destination = trl.getDestination();
-						JSONObject destinationJSON = new JSONObject().element(
-								"x", destination.getX()).element("y",
-								destination.getY());
+							ActivityImpl destination = trl.getDestination();
 
-						transitionsJSON.add(new JSONObject()
-								.element("waypoints", trl.getWaypoints())// 路由边边界
-								.element("properties", trl.getProperties()) // 属性,
-																			// 包括路由名称
-								.element("destination", destinationJSON)// 目标环节
+							JSONObject destinationJSON = null;
+							if (destination != null) {
+								destinationJSON = new JSONObject().element("x",
+										destination.getX()).element("y",
+										destination.getY());
+							}
+							transitionsJSON.add(new JSONObject()
+									.element("waypoints", trl.getWaypoints())// 路由边边界
+									.element("properties", trl.getProperties()) // 属性,
+																				// 包括路由名称
+									.element("destination", destinationJSON)// 目标环节
+									);
+						}
+					}
+
+					if (ai != null) {
+						activitiesJSON.add(new JSONObject()
+								.element("id", ai.getId())
+								.element("height", ai.getHeight())
+								.element("width", ai.getWidth())
+								.element("x", ai.getX())
+								.element("y", ai.getY())
+								.element(
+										"properties",
+										new JSONObject().element("name", ai
+												.getProperties().get("name")))// 属性(包括节点名称)
+
+								.element("transitions", transitionsJSON)// 路由边
 								);
 					}
 				}
-
-				activitiesJSON.add(new JSONObject().element("id", ai.getId())
-						.element("height", ai.getHeight())
-						.element("width", ai.getWidth())
-						.element("x", ai.getX()).element("y", ai.getY())
-						.element("properties", ai.getProperties())// 属性(包括节点名称)
-
-						.element("transitions", transitionsJSON)// 路由边
-						);
 			}
+
+			result.put("activities", activitiesJSON);
+		} catch (Exception e) {
+			logger.error("", e);
 		}
-
-		result.put("activities", activitiesJSON);
-
 		return result;
 	}
 }
