@@ -13,6 +13,7 @@
 <title></title>
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/TaskDwr.js?rand=<%=new java.util.Date().getTime() %>'></script>
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ActivityDwr.js?rand=<%=new java.util.Date().getTime() %>'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ProcessDwr.js?rand=<%=new java.util.Date().getTime() %>'></script>
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
 
 <jsp:include  page="../../css.jsp"  flush="true" />
@@ -159,17 +160,51 @@ function showTaskDetail(row, detailPanel,callback){
       var url ="<%=contextPath%>/views/process/diagram/processDiagram.jsp?processInstanceId="+row.processInstanceId+"&processDefinitionId="+row.processDefinitionId+"&taskId="+row.id+"&frameId="+_iframe.attr("id");
       //加载流程图
       _iframe.attr("src",url);
+      
+    //  
     
+    
+    
+    //流程变量
       var tr = $("<tr></tr>").appendTo(table);
-      var td = $("<td align='center'  style='padding:10px'></td>").appendTo(tr);
-      //打开任务表单
+      var td_var = $("<td align='left'  style='padding:10px'></td>").appendTo(tr);
+      ProcessDwr.getVariableList(row.processInstanceId,
+    	     function(result){
+    	           if(result && result.length>0){
+    	        	   
+    	        	   var var_table =$("<table width='50%'  border='1'></table>").appendTo(td_var);//表格用的table
+    	        	   
+    	        	   var  var_tr=$("<tr></tr>").appendTo(var_table);
+    	        	   var var_td1 =$("<td style='padding:10px' colspan='2'>流程变量</td>").appendTo(var_tr);
+    	        	   
+    	        	   var  var_tr=$("<tr></tr>").appendTo(var_table);
+    	        	   var var_td1 =$("<td style='padding:10px'>变量名</td>").appendTo(var_tr);
+	    		       var var_td2 =$("<td style='padding:10px'>变量值</td>").appendTo(var_tr);
+    	        	   
+    	        	   for(var i=0,s= result.length;i<s ;i++){
+    	    		    	  var  var_tr=$("<tr></tr>").appendTo(var_table);
+    	    		    	  
+    	    		    	  var var_td1 =$("<td style='padding:10px'></td>").appendTo(var_tr).text(result[i].variableName);
+    	    		    	  var var_td2 =$("<td style='padding:10px'></td>").appendTo(var_tr).text(result[i].value);
+    	    		    }
+    	           }
+             } 	  
+      );
+      
+    //
+      
+      
+    //打开任务表单
+      var tr = $("<tr></tr>").appendTo(table);
+      var td_form = $("<td align='center'  style='padding:10px'></td>").appendTo(tr);
+      
       TaskDwr.getFormData(row.id,function(result){
     	  if(result && result.length>0){
     		  
     		  formDataMap[row.id]=result; //表单数据缓存
     		  
     		  
-    		    var form_table =$("<table width='50%'  border='1'></table>").appendTo(td);//表格用的table
+    		    var form_table =$("<table width='50%'  border='1'></table>").appendTo(td_form);//表格用的table
     		    for(var i=0,s= result.length;i<s ;i++){
     		    	  var  form_tr=$("<tr></tr>").appendTo(form_table);
     		    	  
@@ -181,6 +216,9 @@ function showTaskDetail(row, detailPanel,callback){
     		    formTableMap[row.id]=form_table;//表单表格缓存
     	  }
       });
+      //
+      
+      
       
 }
 
