@@ -12,7 +12,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
 <title></title>
-<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/TBizMenuService.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/TBizMenuService.js?rand=<%=new java.util.Date().getTime() %>'></script>
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>	
 <jsp:include  page="../../css.jsp"  flush="true" />
 <script type='text/javascript'>

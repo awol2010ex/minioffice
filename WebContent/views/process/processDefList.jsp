@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
 <jsp:include  page="../../css.jsp"  flush="true" />
-<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ProcessDwr.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ProcessDwr.js?rand=<%=new java.util.Date().getTime() %>'></script>
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>	
 <style type="text/css">
 body {
@@ -68,7 +68,6 @@ $(function() {
                          }
                 	});
                 });
-                
         	}
         	
         }

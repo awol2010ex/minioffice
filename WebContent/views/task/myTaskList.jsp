@@ -11,14 +11,14 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
-<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/TaskDwr.js'></script>
-<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ActivityDwr.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/TaskDwr.js?rand=<%=new java.util.Date().getTime() %>'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ActivityDwr.js?rand=<%=new java.util.Date().getTime() %>'></script>
 <script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
 
 <jsp:include  page="../../css.jsp"  flush="true" />
 
 
-<script type='text/javascript' src='<%=request.getContextPath() %>/static/scripts/activiti/ProcessDiagram.js'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/static/scripts/activiti/ProcessDiagram.js?rand=<%=new java.util.Date().getTime() %>'></script>
 
 
 <style type="text/css">
