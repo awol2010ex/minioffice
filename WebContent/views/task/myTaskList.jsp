@@ -136,18 +136,7 @@ $(function() {
         pageSizeOptions: [5, 10, 15],
         detail: { 
         	//显示明细
-        	onShowDetail: function(row, detailPanel,callback){
-               
-                
-                
-        		var _iframe =$("<iframe frameborder='0'/>").attr("id",new Date().getTime()).appendTo($(detailPanel));
-                //流程图链接
-                  var url ="<%=contextPath%>/views/process/diagram/processDiagram.jsp?processInstanceId="+row.processInstanceId+"&processDefinitionId="+row.processDefinitionId+"&frameId="+_iframe.attr("id");
-                  //加载流程图
-                  _iframe.attr("src",url);
-                
-                
-        	}
+        	onShowDetail: showTaskDetail
         	
         }
 

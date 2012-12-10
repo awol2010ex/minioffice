@@ -49,7 +49,11 @@ $(function() {
     	      activity_menu.show({ top: e.pageY, left: e.pageX });
     	      $(activity_menu.element).css("z-index", "90000").data("activityId",activityId);
     	      return false;
-    	}
+    	},
+    	clickNode:function(e){//单击节点
+    		 var activityId  =$(this).data("activityId");
+    	     alert(activityId);
+  	   }
     });//显示流程图
     
     //节点右键菜单

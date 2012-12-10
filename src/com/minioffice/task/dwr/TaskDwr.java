@@ -41,22 +41,21 @@ public class TaskDwr {
 			User user = (User) currentUser.getSession().getAttribute("user");
 			processEngineFactoryBean.getProcessEngineConfiguration()
 					.getTaskService().claim(taskId, user.getId());// 领取任务
-			
-			//逗号分割字符串转为列表型变量
-			Iterator  it =varset.keySet().iterator();
-			while(it.hasNext()){
-				String key =(String)it.next();
+
+			// 逗号分割字符串转为列表型变量
+			Iterator it = varset.keySet().iterator();
+			while (it.hasNext()) {
+				String key = (String) it.next();
 				Object value = varset.get(key);
-				if(value!=null && value instanceof String){
-					   String[]  valueList=  value.toString().split(",");
-					   if( valueList!=null && valueList.length>1){
-						  List<String>   array_var =Arrays.asList(valueList);
-						  varset.put(key, array_var);
-					   }
+				if (value != null && value instanceof String) {
+					String[] valueList = value.toString().split(",");
+					if (valueList != null && valueList.length > 1) {
+						List<String> array_var = Arrays.asList(valueList);
+						varset.put(key, array_var);
+					}
 				}
 			}
-			
-			
+
 			processEngineFactoryBean.getProcessEngineConfiguration()
 					.getTaskService().complete(taskId, varset);// 审批任务
 		} catch (Exception e) {
@@ -69,25 +68,36 @@ public class TaskDwr {
 	// 取得表单数据
 	public JSONArray getFormData(String taskId) {
 
-		TaskFormData formData = processEngineFactoryBean
-				.getProcessEngineConfiguration().getFormService()
-				.getTaskFormData(taskId);// 取得表单
-		List<FormProperty> pList = formData.getFormProperties();// 表单列表
-
-		JSONArray formArray = new JSONArray();
-		if (pList != null && pList.size() > 0) {
-			for (FormProperty fp : pList) {
-				formArray.add(new JSONObject().element("id", fp.getId()) // ID
-						.element("name", fp.getName()) // 表单名
-						.element("type", fp.getType()==null?"":fp.getType().getName()) // 类型
-						.element("value", fp.getValue())//默认值
-						)
-						
-						; // 值
-			}
+		TaskFormData formData = null;
+		try {
+			formData = processEngineFactoryBean.getProcessEngineConfiguration()
+					.getFormService().getTaskFormData(taskId);// 取得表单
+		} catch (Exception e) {
+			logger.error("", e);
 		}
+		if (formData != null) {
+			List<FormProperty> pList = formData.getFormProperties();// 表单列表
 
-		return formArray;
+			JSONArray formArray = new JSONArray();
+			if (pList != null && pList.size() > 0) {
+				for (FormProperty fp : pList) {
+					formArray.add(new JSONObject().element("id", fp.getId()) // ID
+							.element("name", fp.getName())
+							// 表单名
+							.element(
+									"type",
+									fp.getType() == null ? "" : fp.getType()
+											.getName()) // 类型
+							.element("value", fp.getValue())// 默认值
+							)
+
+					; // 值
+				}
+			}
+
+			return formArray;
+		}
+		return null;
 	}
 
 	// 驳回
@@ -127,7 +137,8 @@ public class TaskDwr {
 					.getCommandExecutorTxRequired()
 					.execute(
 							new JumpCommand(task.getProcessInstanceId(),
-									activityId, taskId,new HashMap<String, Object>()));
+									activityId, taskId,
+									new HashMap<String, Object>()));
 		} catch (Exception e) {
 			logger.error("", e);
 			return false;

@@ -105,7 +105,7 @@ $.fn.ProcessDiagram=function(p){
 			    	            var a=$("<div></div>").data({activityId:activity.id})
 			    	                  .appendTo(me.parent())
 			    	                  .css({
-
+                                          "cursor":"pointer",
 			    	                      "position":"absolute",
 			    	                      "zIndex":"10",
 			    	                      "height":activity.height+"px",
@@ -115,13 +115,27 @@ $.fn.ProcessDiagram=function(p){
 			    	                      "borderColor":"#6BE04E",
 			    	                      "borderWidth":"0px",
 			    	                      "borderStyle":"solid"
-			    	                  }).attr("title",activity.properties.name);// 显示环节名称
+			    	                  }).attr("title",activity.properties.name)// 显示环节名称
+			    	                  ;
 			    	            
 			    	            
 			    	          //节点右键方法
 						      var  func_contextMenuNode  =me.data("p").contextMenuNode ;
 			    	          if(func_contextMenuNode){
 			    	        	  a.bind("contextmenu",   func_contextMenuNode );
+			    	          }
+			    	          
+			    	          //双击节点方法
+			    	          var  func_dblClickNode  =me.data("p").dblClickNode ;
+			    	          if(func_dblClickNode){
+			    	        	  a.bind("dblclick",   func_dblClickNode );
+			    	          }
+			    	          
+			    	          
+			    	          //单击节点方法
+			    	          var  func_clickNode  =me.data("p").clickNode ;
+			    	          if(func_clickNode){
+			    	        	  a.bind("click",   func_clickNode );
 			    	          }
 			    	            
 			    	            
