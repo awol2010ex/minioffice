@@ -116,6 +116,8 @@ $.fn.ProcessDiagram=function(p){
 			    	                      "borderWidth":"0px",
 			    	                      "borderStyle":"solid"
 			    	                  }).attr("title",activity.properties.name)// 显示环节名称
+			    	                  .bind("mouseover" , function(e){$(this).css({"borderWidth":"2px"});})
+			    	                  .bind("mouseout" , function(e){$(this).css({"borderWidth":"0px"});})
 			    	                  ;
 			    	            
 			    	            
