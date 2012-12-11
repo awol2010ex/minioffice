@@ -172,21 +172,28 @@ function showTaskDetail(row, detailPanel,callback){
     	     function(result){
     	           if(result && result.length>0){
     	        	   
+    	        	   
+    	        	   
     	        	   var var_table =$("<table width='50%'  border='1'></table>").appendTo(td_var);//表格用的table
     	        	   
     	        	   var  var_tr=$("<tr></tr>").appendTo(var_table);
-    	        	   var var_td1 =$("<td style='padding:10px' colspan='2'>流程变量</td>").appendTo(var_tr);
+    	        	   var var_td =$("<td style='padding:10px' ></td>").appendTo(var_tr);
     	        	   
-    	        	   var  var_tr=$("<tr></tr>").appendTo(var_table);
-    	        	   var var_td1 =$("<td style='padding:10px'>变量名</td>").appendTo(var_tr);
-	    		       var var_td2 =$("<td style='padding:10px'>变量值</td>").appendTo(var_tr);
+    	        	   var var_div =$("<div></div>").appendTo(var_td);
     	        	   
-    	        	   for(var i=0,s= result.length;i<s ;i++){
-    	    		    	  var  var_tr=$("<tr></tr>").appendTo(var_table);
-    	    		    	  
-    	    		    	  var var_td1 =$("<td style='padding:10px'></td>").appendTo(var_tr).text(result[i].variableName);
-    	    		    	  var var_td2 =$("<td style='padding:10px'></td>").appendTo(var_tr).text(result[i].value);
-    	    		    }
+    	        	   var_div.ligerGrid({
+    	        	            columns: [ 
+    	        	                  { display: '变量名', name: 'variableName', width: "50%",isAllowHide: true },
+    	        	                  { display: '值', name: 'value', width: "50%",isAllowHide: true }
+    	        	            ],
+    	        	            data:{Rows:result , Total:result.length},
+    	        	            title:'变量',
+    	        	            dataAction:'local',
+    	        	            pageSize: result.length,
+    	        	            height:"90%",
+    	        	            enabledEdit: false,
+    	        	            pageSizeOptions: [5, 10, 15]
+    	        	   });
     	           }
              } 	  
       );
