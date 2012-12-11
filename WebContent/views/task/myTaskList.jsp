@@ -132,7 +132,7 @@ $(function() {
         dataAction:'server',
         pageSize: 5,
         height:"90%",
-        enabledEdit: true,
+        enabledEdit: false,
         dateFormat:'yyyy-MM-dd hh:mm:ss',
         pageSizeOptions: [5, 10, 15],
         detail: { 

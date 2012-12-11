@@ -52,7 +52,7 @@ $(function() {
     	},
     	clickNode:function(e){//单击节点
     		 var activityId  =$(this).data("activityId");
-    	     alert(activityId);
+    		 top.navtab.addTabItem({tabid:new Date().getTime(),text:'该环节任务列表',url:'<%=contextPath%>/views/task/activityTaskList.jsp?processInstanceId=<%=request.getParameter("processInstanceId") %>&activityId='+activityId,height:"95%"});
   	   }
     });//显示流程图
     
