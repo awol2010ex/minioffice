@@ -15,6 +15,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 //跳转命令
 public class JumpCommand implements Command<Object>, Serializable {
 	private final static Logger logger = LoggerFactory
@@ -23,17 +24,17 @@ public class JumpCommand implements Command<Object>, Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2372913338251310191L;
-	protected String executionId;//流程ID
-	protected String targetActivitiId;//跳转目标环节ID
-	protected String taskId;//当前任务ID
+	protected String executionId;// 流程ID
+	protected String targetActivitiId;// 跳转目标环节ID
+	protected String taskId;// 当前任务ID
 	private Map<String, Object> variables;
 
-	public JumpCommand(String executionId, String targetActivitiId, String taskId ,
-			Map<String, Object> variables) {
+	public JumpCommand(String executionId, String targetActivitiId,
+			String taskId, Map<String, Object> variables) {
 		this.executionId = executionId;
 		this.targetActivitiId = targetActivitiId;
 		this.variables = variables;
-		this.taskId=taskId;
+		this.taskId = taskId;
 	}
 
 	public Object execute(CommandContext commandContext) {
@@ -44,8 +45,8 @@ public class JumpCommand implements Command<Object>, Serializable {
 			throw new ActivitiException("targetActivitiId is null!");
 		}
 
-		//查找运行中 的Execution
-		ExecutionEntity execution = commandContext.getExecutionManager()
+		// 查找运行中 的Execution
+		ExecutionEntity execution = commandContext.getExecutionEntityManager()
 				.findExecutionById(executionId);
 		if (execution == null) {
 			HistoricProcessInstance hai = Context
@@ -61,12 +62,12 @@ public class JumpCommand implements Command<Object>, Serializable {
 			}
 		}
 
-		//设置流程变量
+		// 设置流程变量
 		if (variables != null && !variables.isEmpty()) {
 			execution.setVariables(variables);
 		}
 
-		//查找流程定义
+		// 查找流程定义
 		String processDefinitionId = execution.getProcessDefinitionId();
 		RepositoryServiceImpl rsi = (RepositoryServiceImpl) Context
 				.getProcessEngineConfiguration().getRepositoryService();
@@ -79,24 +80,21 @@ public class JumpCommand implements Command<Object>, Serializable {
 					+ " doesn't exist");
 		}
 
-		//跳转
+		// 跳转
 		try {
 			execution.take(targetActiviti.getIncomingTransitions().iterator()
 					.next());
-			//删除当前任务(删除理由是驳回)
-			 TaskEntity task = Context
-				      .getCommandContext()
-				      .getTaskManager()
-				      .findTaskById(taskId);
-			 if(task!=null  && !task.isDeleted()){
-			
-			
-			  Context.getCommandContext()
-	          .getTaskManager().deleteTask(task, "reject",false);
-			 }
+			// 删除当前任务(删除理由是驳回)
+			TaskEntity task = Context.getCommandContext()
+					.getTaskEntityManager().findTaskById(taskId);
+			if (task != null && !task.isDeleted()) {
+
+				Context.getCommandContext().getTaskEntityManager()
+						.deleteTask(task, "reject", false);
+			}
 			return true;
 		} catch (Exception e) {
-			logger.error("",e);
+			logger.error("", e);
 			return false;
 		}
 	}
