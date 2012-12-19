@@ -54,9 +54,9 @@ $(function() {
               { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true },
               { display: '流程定义ID', name: 'processDefinitionId', width: "15%",isAllowHide: true },
               { display: '流程实例ID', name: 'processInstanceId', width: "15%",isAllowHide: true },
-              { display: '操作', name: 'id', width: "15%",isAllowHide: true,
+              { display: '操作', name: 'id', width: "30%",isAllowHide: true,
              	 render :function(row,i){
-             		   return   "<button  onclick=\"commitTask('"+row.id+"')\"  >审批</button>"
+             		   return   "<span><button  onclick=\"commitTask('"+row.id+"')\"  >审批</button>&nbsp;<button  onclick=\"viewProcessList('"+row.processInstanceId+"')\"  >查看审批记录</button></span>"
              		 
              	 }
                
@@ -124,7 +124,14 @@ $(function() {
               { display: '任务名称', name: 'name', width: "15%",isAllowHide: true },
               { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true },
               { display: '流程定义ID', name: 'processDefinitionId', width: "15%",isAllowHide: true },
-              { display: '流程实例ID', name: 'processInstanceId', width: "15%",isAllowHide: true }
+              { display: '流程实例ID', name: 'processInstanceId', width: "15%",isAllowHide: true },
+              { display: '操作', name: 'id', width: "30%",isAllowHide: true,
+              	 render :function(row,i){
+              		   return   "<span><button  onclick=\"viewProcessList('"+row.processInstanceId+"')\"  >查看审批记录</button></span>"
+              		 
+              	 }
+                
+                }
         ],
         url: "<%=contextPath%>/restful/task/mytask/history/list/",
         sortName: 'id',
@@ -264,6 +271,13 @@ function commitTask(taskId){
  	});
 	 
  }
+ 
+ //查看流程审批列表
+ function viewProcessList(processInstanceId){
+	 top.navtab.addTabItem({tabid:new Date().getTime(),text:'该环节任务列表',url:'<%=contextPath%>/views/task/processTaskList.jsp?processInstanceId='+processInstanceId,height:"95%"});
+ }
+ 
+  
 </script>
 </head>
 <body>

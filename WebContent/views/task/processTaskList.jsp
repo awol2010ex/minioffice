@@ -2,8 +2,6 @@
     pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
-
-    String activityId =request.getParameter("activityId");//环节ID
     
     String processInstanceId =request.getParameter("processInstanceId");//流程实例ID
 %>
@@ -31,7 +29,7 @@ var g_history=null;//分派任务列表
 
 
 
-//当前环节的任务列表
+//当前流程的任务列表
 $(function() {
 	$("body").ligerLayout( {});
 	
@@ -51,7 +49,7 @@ $(function() {
               
               
         ],
-        url: "<%=contextPath%>/restful/task/activity/history/list/?processInstanceId=<%=processInstanceId%>&activityId=<%=activityId%>",
+        url: "<%=contextPath%>/restful/task/process/history/list/?processInstanceId=<%=processInstanceId%>",
         sortName: 'id',
         showTitle: false,
         dataAction:'server',
