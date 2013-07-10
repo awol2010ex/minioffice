@@ -1,6 +1,7 @@
 package com.minioffice.process.web;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,10 +21,14 @@ import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.spring.ProcessEngineFactoryBean;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -263,5 +268,62 @@ public class ProcessController {
 		}
 
 	}
+	
+	
+	// 部署模板
+		@SuppressWarnings("rawtypes")
+		@RequestMapping(value = "/processDef/deploy")
+		public void deploy(HttpServletRequest request, HttpServletResponse response) {
+			logger.info("开始部署模板");
+
+			boolean success = false;
+			try {
+				File tempfile = new File(System.getProperty("java.io.tmpdir"));// 采用系统临时文件目录
+				DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+				diskFileItemFactory.setSizeThreshold(4096); // 设置缓冲区大小，这里是4kb
+				diskFileItemFactory.setRepository(tempfile); // 设置缓冲区目录
+				ServletFileUpload fu = new ServletFileUpload(diskFileItemFactory);
+				fu.setSizeMax(4194304);
+				List fileItems = fu.parseRequest(request);
+
+				if (fileItems != null && fileItems.size() > 0) {
+					DeploymentBuilder db = processEngineFactoryBean
+							.getProcessEngineConfiguration().getRepositoryService()
+							.createDeployment();
+
+					for (int i = 0, s = fileItems.size(); i < s; i++) {
+						FileItem fi = (FileItem) fileItems.get(i);
+						if (fi.getName() != null
+								&& fi.getName().endsWith(".bpmn20.xml")) {
+							db.addInputStream(fi.getName(), fi.getInputStream());
+							
+							
+							db.name( fi.getName()).deploy();
+						}
+					}
+					
+
+					logger.info("完成部署模板");
+				} else {
+					success = false;
+				}
+
+				success = true;
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("", e);
+
+				success = false;
+			}
+
+			try {
+				response.getWriter().print(String.valueOf(success));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				logger.error("", e);
+			}
+		}
+
 
 }

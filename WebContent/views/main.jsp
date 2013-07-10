@@ -91,8 +91,8 @@ $(function() {
 
 </div>
 
-<div position="center">
-  <div id="tab"></div>
+<div position="center"  style="height: 98%">
+  <div id="tab"  style="height: 100%"></div>
 </div>
 
 
