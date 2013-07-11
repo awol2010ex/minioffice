@@ -10,8 +10,6 @@
     </userTask>
     <userTask id="deptLeader" name="部门领导审批" activiti:assignee="${applyUserId}"></userTask>
     <userTask id="leader" name="总经理审批" activiti:assignee="${applyUserId}"></userTask>
-    <sequenceFlow id="flow1" name="" sourceRef="startEvent" targetRef="apply"></sequenceFlow>
-    <sequenceFlow id="flow2" name="" sourceRef="apply" targetRef="deptLeader"></sequenceFlow>
     <sequenceFlow id="flow3" name="" sourceRef="leader" targetRef="endEvent"></sequenceFlow>
     <sequenceFlow id="flow1" name="请假天数小于3" sourceRef="deptLeader" targetRef="endEvent">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${days<=3}]]></conditionExpression>
@@ -19,6 +17,8 @@
     <sequenceFlow id="flow2" name="请假天数大于3" sourceRef="deptLeader" targetRef="leader">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${days>3}]]></conditionExpression>
     </sequenceFlow>
+    <sequenceFlow id="flow4" name="" sourceRef="startEvent" targetRef="apply"></sequenceFlow>
+    <sequenceFlow id="flow5" name="" sourceRef="apply" targetRef="deptLeader"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_leave2">
     <bpmndi:BPMNPlane bpmnElement="leave2" id="BPMNPlane_leave2">
@@ -29,29 +29,20 @@
         <omgdc:Bounds height="35" width="35" x="780" y="170"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="apply" id="BPMNShape_apply">
-        <omgdc:Bounds height="80" width="100" x="240" y="144"></omgdc:Bounds>
+        <omgdc:Bounds height="80" width="100" x="280" y="140"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="deptLeader" id="BPMNShape_deptLeader">
-        <omgdc:Bounds height="80" width="100" x="411" y="70"></omgdc:Bounds>
+        <omgdc:Bounds height="80" width="100" x="510" y="20"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="leader" id="BPMNShape_leader">
         <omgdc:Bounds height="80" width="100" x="510" y="315"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="177" y="186"></omgdi:waypoint>
-        <omgdi:waypoint x="240" y="184"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="290" y="144"></omgdi:waypoint>
-        <omgdi:waypoint x="290" y="70"></omgdi:waypoint>
-        <omgdi:waypoint x="411" y="110"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
         <omgdi:waypoint x="560" y="315"></omgdi:waypoint>
         <omgdi:waypoint x="797" y="205"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="511" y="110"></omgdi:waypoint>
+        <omgdi:waypoint x="610" y="60"></omgdi:waypoint>
         <omgdi:waypoint x="794" y="70"></omgdi:waypoint>
         <omgdi:waypoint x="797" y="170"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
@@ -59,13 +50,20 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="461" y="150"></omgdi:waypoint>
-        <omgdi:waypoint x="530" y="227"></omgdi:waypoint>
+        <omgdi:waypoint x="560" y="100"></omgdi:waypoint>
         <omgdi:waypoint x="560" y="227"></omgdi:waypoint>
         <omgdi:waypoint x="560" y="315"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="14" width="100" x="10" y="0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="177" y="186"></omgdi:waypoint>
+        <omgdi:waypoint x="280" y="180"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="330" y="140"></omgdi:waypoint>
+        <omgdi:waypoint x="560" y="100"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

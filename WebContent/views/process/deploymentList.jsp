@@ -22,7 +22,7 @@ body {
 var g=null;
 //部署流程模板列表
 $(function() {
-	$("body").ligerLayout( {topHeight:200});
+	$("body").ligerLayout( {topHeight:100});
 	var g=$("#grid").ligerGrid({
         columns: [ 
               { display: '序号', name: 'id', width: "20%",isAllowHide: true },
@@ -66,25 +66,17 @@ $(function() {
 </head>
 <body style="width:99%;height:95%;">
 <div position="top">
-         <table width="95%">
+         <table>
    
    <tr>
-       <td colspan="2">
+       <td  align="center"  width="100">
          <div id="fileQueue"></div> 
          <input type="file" name="uploadify" id="uploadify" /> 
        </td>
-   </tr>
-   <tr>
-       <td colspan="2" align="left" class="l-table-edit-td" width="10%"><input
+       <td align="center"  width="100"><input
 			type="button" value="上传" id="Button1"
 			class="l-button l-button-submit" /></td>
    </tr>
-   <tr>
-
-		
-
-
-	</tr>
 </table>
 </div>
 <div position="center">
