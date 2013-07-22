@@ -30,7 +30,7 @@ body {
 <script type='text/javascript'>
 var g_assignee=null;//分派任务列表
 
-var g_candidate=null;//邀请任务列表
+var g_candidate=null;//候选任务列表
 
 var g_history=null;//已归档任务列表
 
@@ -78,7 +78,7 @@ $(function() {
         }
 
     });
-	//被邀请任务
+	//候选任务
 	g_candidate=$("#grid_candidate").ligerGrid({
         columns: [ 
               
@@ -288,11 +288,11 @@ function commitTask(taskId){
             <!-- 被分派任务 -->
             <div id="grid_assignee" style="width:99% ;height:90%;"></div>
         </div>
-         <div  title="被邀请任务" showClose="false">
+         <div  title="候选任务" showClose="false">
             <!-- 被邀请任务 -->
             <div id="grid_candidate" style="width:99% ;height:90%;"></div>
         </div>
-        <div  title="已归档任务" showClose="false">
+        <div  title="归档任务" showClose="false">
             <!-- 已归档任务 -->
             <div id="grid_history" style="width:99% ;height:90%;"></div>
         </div>
