@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.identity.User;
@@ -179,8 +180,7 @@ public class ProcessController {
 		HistoricProcessInstanceQuery query = processEngineFactoryBean
 				.getProcessEngineConfiguration().getHistoryService()
 				.createHistoricProcessInstanceQuery().startedBy(user.getId())
-				.unfinished()
-				.orderByProcessInstanceStartTime().desc();
+				.unfinished().orderByProcessInstanceStartTime().desc();
 		try {
 			JSONObject o = new JSONObject();
 			o.put("Total", query.count());
@@ -229,8 +229,13 @@ public class ProcessController {
 					.getDeployedProcessDefinition(processInstance
 							.getProcessDefinitionId());
 
+			BpmnModel model = processEngineFactoryBean
+					.getProcessEngineConfiguration().getRepositoryService()
+					.getBpmnModel(processInstance.getProcessDefinitionId());
+
 			if (processDefinition != null
-					&& processDefinition.isGraphicalNotationDefined()) {
+					&& processDefinition.isGraphicalNotationDefined()
+					&& model != null) {
 
 				List<String> haIdList = new ArrayList<String>();// 当前环节
 				try {
@@ -245,7 +250,7 @@ public class ProcessController {
 				try {
 
 					InputStream definitionImageStream = ProcessDiagramGenerator
-							.generateDiagram(processDefinition, "png", haIdList);
+							.generateDiagram(model, "png", haIdList);
 					// 输出流程图
 					BufferedImage theImg = ImageIO.read(definitionImageStream);
 					ImageIO.write(theImg, "png", response.getOutputStream());
@@ -268,62 +273,58 @@ public class ProcessController {
 		}
 
 	}
-	
-	
+
 	// 部署模板
-		@SuppressWarnings("rawtypes")
-		@RequestMapping(value = "/processDef/deploy")
-		public void deploy(HttpServletRequest request, HttpServletResponse response) {
-			logger.info("开始部署模板");
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/processDef/deploy")
+	public void deploy(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("开始部署模板");
 
-			boolean success = false;
-			try {
-				File tempfile = new File(System.getProperty("java.io.tmpdir"));// 采用系统临时文件目录
-				DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
-				diskFileItemFactory.setSizeThreshold(4096); // 设置缓冲区大小，这里是4kb
-				diskFileItemFactory.setRepository(tempfile); // 设置缓冲区目录
-				ServletFileUpload fu = new ServletFileUpload(diskFileItemFactory);
-				fu.setSizeMax(4194304);
-				List fileItems = fu.parseRequest(request);
+		boolean success = false;
+		try {
+			File tempfile = new File(System.getProperty("java.io.tmpdir"));// 采用系统临时文件目录
+			DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+			diskFileItemFactory.setSizeThreshold(4096); // 设置缓冲区大小，这里是4kb
+			diskFileItemFactory.setRepository(tempfile); // 设置缓冲区目录
+			ServletFileUpload fu = new ServletFileUpload(diskFileItemFactory);
+			fu.setSizeMax(4194304);
+			List fileItems = fu.parseRequest(request);
 
-				if (fileItems != null && fileItems.size() > 0) {
-					DeploymentBuilder db = processEngineFactoryBean
-							.getProcessEngineConfiguration().getRepositoryService()
-							.createDeployment();
+			if (fileItems != null && fileItems.size() > 0) {
+				DeploymentBuilder db = processEngineFactoryBean
+						.getProcessEngineConfiguration().getRepositoryService()
+						.createDeployment();
 
-					for (int i = 0, s = fileItems.size(); i < s; i++) {
-						FileItem fi = (FileItem) fileItems.get(i);
-						if (fi.getName() != null
-								&& fi.getName().endsWith(".bpmn20.xml")) {
-							db.addInputStream(fi.getName(), fi.getInputStream());
-							
-							
-							db.name( fi.getName()).deploy();
-						}
+				for (int i = 0, s = fileItems.size(); i < s; i++) {
+					FileItem fi = (FileItem) fileItems.get(i);
+					if (fi.getName() != null
+							&& fi.getName().endsWith(".bpmn20.xml")) {
+						db.addInputStream(fi.getName(), fi.getInputStream());
+
+						db.name(fi.getName()).deploy();
 					}
-					
-
-					logger.info("完成部署模板");
-				} else {
-					success = false;
 				}
 
-				success = true;
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				logger.error("", e);
-
+				logger.info("完成部署模板");
+			} else {
 				success = false;
 			}
 
-			try {
-				response.getWriter().print(String.valueOf(success));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				logger.error("", e);
-			}
+			success = true;
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("", e);
+
+			success = false;
 		}
 
+		try {
+			response.getWriter().print(String.valueOf(success));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			logger.error("", e);
+		}
+	}
 
 }
