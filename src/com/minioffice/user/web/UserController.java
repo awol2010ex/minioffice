@@ -1,8 +1,16 @@
 package com.minioffice.user.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.activiti.engine.identity.User;
+import org.activiti.engine.identity.UserQuery;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -66,5 +74,35 @@ public class UserController {
 		currentUser.getSession().setAttribute("user", user);// 保存会话
 
 		return "main";
+	}
+	
+	@RequestMapping(value = "/list")
+	public void getUserList(int page, int pagesize,
+			HttpServletResponse response) {
+		UserQuery query = processEngineFactoryBean
+				.getProcessEngineConfiguration().getIdentityService().createUserQuery();
+
+		try {
+			JSONObject o = new JSONObject();
+			o.put("Total", query.count());
+
+			List<User> list = query.listPage(
+					(page - 1) * pagesize, pagesize);
+			JSONArray Rows = new JSONArray();
+			if (list != null && list.size() > 0) {
+				for (User p : list) {
+					Rows.add(new JSONObject().element("id", p.getId())
+							.element("id", p.getId())
+							.element("name", p.getFirstName())//名称
+							.element("email", p.getEmail()) );//邮箱
+				}
+			}
+
+			o.put("Rows", Rows);
+			response.getWriter().print(o.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("", e);
+		}
 	}
 }
