@@ -63,4 +63,16 @@ public class ProcessDwr {
 
 		return result;
 	}
+	
+	//删除流程定义
+	public boolean deleteDeployment(String deploymentId){
+		try {
+		 processEngineFactoryBean
+			.getProcessEngineConfiguration().getRepositoryService().deleteDeployment(deploymentId);
+		} catch (Exception e) {
+			logger.error("", e);
+			return false;
+		}
+		return true;
+	}
 }

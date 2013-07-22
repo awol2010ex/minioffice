@@ -13,6 +13,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
 <jsp:include  page="../../css.jsp"  flush="true" />
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ProcessDwr.js?rand=<%=new java.util.Date().getTime() %>'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
 <style type="text/css">
 body {
 	font-size: 12px;
@@ -27,7 +29,14 @@ $(function() {
         columns: [ 
               { display: '序号', name: 'id', width: "20%",isAllowHide: true },
               { display: '名称', name: 'name', width: "20%",isAllowHide: true },
-              { display: '部署时间', name: 'deploymentTime', width: "20%",isAllowHide: true  ,type:'date'}
+              { display: '部署时间', name: 'deploymentTime', width: "20%",isAllowHide: true  ,type:'date'},
+              { display: '操作',  width: "30%",isAllowHide: true,
+              	 render :function(row,i){
+           		   return   "<span><button onclick=\"deleteDeployment('"+row.id+"')\" >删除</button></span>"
+           		 
+           	 }
+             
+             }
              
         ],
         url: "<%=contextPath%>/restful/process/deployment/list/",
@@ -39,7 +48,7 @@ $(function() {
         enabledEdit: true,
         dateFormat:'yyyy-MM-dd hh:mm:ss',
         pageSizeOptions: [5, 10, 15]
-
+    
     });
 	
 	
@@ -53,7 +62,10 @@ $(function() {
 		'multi': true,
 		'wmode':'transparent',
 		'method':'post',
-		'buttonImg':"<%=contextPath%>/static/resources/add.gif"
+		'buttonImg':"<%=contextPath%>/static/resources/add.gif",
+		onAllComplete:function(){
+			refresh();
+		}
 	}); 
 	
 	
@@ -62,6 +74,24 @@ $(function() {
 
 	});
 });
+//删除流程模版
+function deleteDeployment(deploymentId){
+	
+	ProcessDwr.deleteDeployment(deploymentId ,function(result){
+		  if(result){
+	        alert("删除成功");
+	        refresh();
+	    }else{
+	        alert("删除失败");
+	    }
+	});
+	
+}
+
+function refresh(){
+	$("#grid").ligerGetGridManager().loadData();
+}
+
 </script>
 </head>
 <body style="width:99%;height:95%;">
