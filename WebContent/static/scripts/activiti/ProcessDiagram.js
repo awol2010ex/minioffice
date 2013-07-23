@@ -257,8 +257,6 @@ $.fn.ProcessDiagram=function(p){
                                    $(this).data("moveBall").hide(1000);
                                }
                      );
-			         
-			         ;
 			    });
 		});
 		

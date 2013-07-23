@@ -10,6 +10,7 @@ import net.sf.json.JSONObject;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -115,6 +116,14 @@ public class TaskDwr {
 			return false;
 		}
 
+		
+		
+		HistoricTaskInstanceQuery   oldTaskInstanceQuery=processEngineFactoryBean.getProcessEngineConfiguration().getHistoryService().createHistoricTaskInstanceQuery().processInstanceId(task.getProcessInstanceId()).taskDefinitionKey(activityId);
+		if(oldTaskInstanceQuery.count()==0){
+			logger.error("不是已经过的环节");
+			return false;
+		}
+		
 		// 找到流程实例
 		ProcessInstance processInstance = null;
 		try {
