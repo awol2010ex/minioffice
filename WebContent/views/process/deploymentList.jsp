@@ -63,7 +63,13 @@ $(function() {
 		'wmode':'transparent',
 		'method':'post',
 		'buttonImg':"<%=contextPath%>/static/resources/add.gif",
-		onAllComplete:function(event, data){
+		onComplete:function(event, ID, fileObj, response, data){
+			if(response=='true'){
+				alert("部署成功");
+			}
+			else{
+				alert("部署失败");
+			}
 			refresh();
 		}
 	}); 
