@@ -12,7 +12,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>用户列表</title>
 <jsp:include  page="../../css.jsp"  flush="true" />
-
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/UserDwr.js?rand=<%=new java.util.Date().getTime() %>'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
 
 <style type="text/css">
 body {
@@ -22,7 +23,7 @@ body {
 <script type='text/javascript'>
 var g=null;//分派任务列表
 
-
+var _win;
 
 //我的任务列表
 $(function() {
@@ -32,6 +33,18 @@ $(function() {
 
 	//被分派任务
 	g=$("#grid").ligerGrid({
+		toolbar:{
+			
+			items:[
+			   {text:"新建",click:function(){
+				  if(!_win)
+					  
+				   _win =$.ligerDialog.open({ target: $("#target") });
+				  else
+					  _win.show();
+			   }}       
+			]
+		},
         columns: [ 
               
               { display: 'ID', name: 'id', width: "15%",isAllowHide: true },
@@ -49,9 +62,33 @@ $(function() {
         pageSizeOptions: [5, 10, 15]
 
     });
+	
+	//保存用户
+	$("#buttonSave").click(function(){
+	    UserDwr.saveUser(
+	    	 $("#_userName").val(),
+	    	 $("#_password").val(),
+	         $("#_email").val(),
+	         function(result){
+	             if(result){
+	                alert("保存成功");
+	                refresh();
+	                if(_win){
+	                	_win.hide();
+	                }
+	             }else{
+	                alert("保存失败");
+	             }
+	         }
+	    );
+	    
+	});
 });
 
- 
+
+function refresh(){
+	$("#grid").ligerGetGridManager().loadData();
+}
   
 </script>
 </head>
@@ -62,6 +99,18 @@ $(function() {
         
 </div>
 
+
+
+<div id="target" style="width:200px; margin:3px; display:none;">
+     <table width="100%">
+        <tr><td>用户名</td></tr><tr><td><input type='text'   id="_userName"/></td></tr>
+        <tr><td>密码</td></tr><tr><td><input type='password' id="_password"/></td></tr>
+        <tr><td>邮箱</td></tr><tr><td><input type='text'  id="_email" /></td></tr>
+        
+        
+        <tr><td><input   type="button"  id="buttonSave"  value="保存"/></td></tr>
+     </table>
+</div>
 
 </body>
 </html>

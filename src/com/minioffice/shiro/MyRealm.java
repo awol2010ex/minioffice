@@ -44,7 +44,7 @@ public class MyRealm extends AuthorizingRealm {
 
 			User user = processEngineFactoryBean
 					.getProcessEngineConfiguration().getIdentityService()
-					.createUserQuery().userId(userName).singleResult();
+					.createUserQuery().userFirstName(userName).singleResult();
 
 			if (user == null) {
 				throw new UnknownAccountException();
