@@ -63,7 +63,7 @@ $(function() {
 		'wmode':'transparent',
 		'method':'post',
 		'buttonImg':"<%=contextPath%>/static/resources/add.gif",
-		onAllComplete:function(){
+		onAllComplete:function(event, data){
 			refresh();
 		}
 	}); 

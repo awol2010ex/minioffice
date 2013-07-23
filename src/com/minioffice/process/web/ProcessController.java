@@ -298,10 +298,16 @@ public class ProcessController {
 				for (int i = 0, s = fileItems.size(); i < s; i++) {
 					FileItem fi = (FileItem) fileItems.get(i);
 					if (fi.getName() != null
-							&& fi.getName().endsWith(".bpmn20.xml")) {
+							&& (fi.getName().endsWith(".bpmn20.xml")  || fi.getName().endsWith(".bpmn"))) {
 						db.addInputStream(fi.getName(), fi.getInputStream());
 
-						db.name(fi.getName()).deploy();
+						Deployment   d=db.name(fi.getName()).deploy();
+						if(d!=null && d.getId()!=null){
+							success = true;
+						}
+						else{
+							success = false;
+						}
 					}
 				}
 

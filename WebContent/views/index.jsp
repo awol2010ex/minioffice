@@ -11,6 +11,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<script src="<%=contextPath%>/static/scripts/jquery-1.7.2.min.js"
+ type="text/javascript"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
 
@@ -42,23 +44,30 @@ body {
 
 <script type='text/javascript'>
 //初始页面
-function init(){
-	
+$(document).ready(function(){
 	<%if(error!=null&&!"".equals(error)){%>
 	   alert("<%=error%>");
 	<%}%>
-}
+	//登陆
+	$(document).keydown(function(event){
+		
+		if   (event.keyCode   ==   13)   { 
+		       document.getElementById("form1").submit();
+		 }
+	});
+	
+	
+});
+	
+	
+	
+	
+	
 
-//登陆
-function login(form){
-	 if   (event.keyCode   ==   13)   { 
-	       document.getElementById("form1").submit();
-	 }
-}
 
 </script>
 </head>
-<body onload="init()">
+<body >
 <form name="form1" method="post" id="form1" action="<%=contextPath %>/restful/user/login/">
 <center>
 <table cellpadding="0" cellspacing="0" class="l-table-edit">
@@ -68,7 +77,7 @@ function login(form){
 		<td align="right" class="l-table-edit-td" width="30%">用户名:</td>
 
 		<td class="l-table-edit-td"><input name="j_username"
-			type="text" id="j_username" ltype="text"   onkeypress= "login()" /></td>
+			type="text" id="j_username" ltype="text" /></td>
 
 
 	</tr>
@@ -77,7 +86,7 @@ function login(form){
 		<td align="right" class="l-table-edit-td" >密码:</td>
 
 		<td  class="l-table-edit-td"><input name="j_password"
-			 id="j_password" ltype="password"  type="password" onkeypress= "login()"/></td>
+			 id="j_password" ltype="password"  type="password" /></td>
 
 
 	</tr>

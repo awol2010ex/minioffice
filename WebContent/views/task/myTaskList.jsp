@@ -265,6 +265,7 @@ function commitTask(taskId){
  	TaskDwr.commitTask(taskId ,varset,function(result){
 		   if(result){
           alert("审批成功");
+          refresh();
         }else{
           alert("审批失败");
         }
@@ -276,7 +277,12 @@ function commitTask(taskId){
  function viewProcessList(processInstanceId){
 	 top.navtab.addTabItem({tabid:new Date().getTime(),text:'该环节任务列表',url:'<%=contextPath%>/views/task/processTaskList.jsp?processInstanceId='+processInstanceId,height:"95%"});
  }
- 
+ function refresh(){
+		$("#grid_candidate").ligerGetGridManager().loadData();
+		$("#grid_assignee").ligerGetGridManager().loadData();
+		$("#grid_history").ligerGetGridManager().loadData();
+		
+ }
   
 </script>
 </head>
