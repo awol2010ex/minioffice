@@ -182,7 +182,7 @@ public class TaskController {
 		HistoricTaskInstanceQuery query = processEngineFactoryBean
 				.getProcessEngineConfiguration().getHistoryService()
 				.createHistoricTaskInstanceQuery().taskAssignee(user.getId())
-				.orderByHistoricActivityInstanceStartTime().desc();
+				.orderByHistoricTaskInstanceStartTime().desc();
 
 		
 		
@@ -255,7 +255,7 @@ public class TaskController {
 				.createHistoricTaskInstanceQuery()
 				.taskDefinitionKey(activityId)
 				.processInstanceId(processInstanceId)
-				.orderByHistoricActivityInstanceStartTime().desc();
+				.orderByHistoricTaskInstanceStartTime().desc();
 
 		
 		
@@ -327,7 +327,7 @@ public class TaskController {
 				.getProcessEngineConfiguration().getHistoryService()
 				.createHistoricTaskInstanceQuery()
 				.processInstanceId(processInstanceId)
-				.orderByHistoricActivityInstanceStartTime().desc();
+				.orderByHistoricTaskInstanceStartTime().desc();
 
 		
 		

@@ -209,6 +209,47 @@ public class ProcessController {
 			logger.error("", e);
 		}
 	}
+	
+	
+	
+	// 取得当前用户发起的流程
+		@RequestMapping(value = "/allprocess/list/")
+		public void getAllProcessList(int page, int pagesize,
+				HttpServletResponse response) {
+			// 查询流程实例
+			HistoricProcessInstanceQuery query = processEngineFactoryBean
+					.getProcessEngineConfiguration().getHistoryService()
+					.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc();
+			try {
+				JSONObject o = new JSONObject();
+				o.put("Total", query.count());
+
+				List<HistoricProcessInstance> list = query.listPage((page - 1)
+						* pagesize, pagesize);
+				JSONArray Rows = new JSONArray();
+				if (list != null && list.size() > 0) {
+					for (HistoricProcessInstance p : list) {
+						Rows.add(new JSONObject()
+								.element("id", p.getId())
+								.element("startTime", p.getStartTime())
+								// 发起时间
+								.element("endTime", p.getEndTime())
+								// 结束时间
+								.element("processDefinitionId",
+										p.getProcessDefinitionId())// 流程定义ID
+										
+							   .element("processInstanceId", p.getId()) //流程实例ID
+						);
+					}
+				}
+
+				o.put("Rows", Rows);
+				response.getWriter().print(o.toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("", e);
+			}
+		}
 
 	// 查看流程实例的流程图
 	@RequestMapping(value = "/processInstance/diagram/{processInstanceId}")

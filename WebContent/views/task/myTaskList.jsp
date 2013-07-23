@@ -275,7 +275,7 @@ function commitTask(taskId){
  
  //查看流程审批列表
  function viewProcessList(processInstanceId){
-	 top.navtab.addTabItem({tabid:new Date().getTime(),text:'该环节任务列表',url:'<%=contextPath%>/views/task/processTaskList.jsp?processInstanceId='+processInstanceId,height:"95%"});
+	 top.navtab.addTabItem({tabid:new Date().getTime(),text:'流程审批列表',url:'<%=contextPath%>/views/task/processTaskList.jsp?processInstanceId='+processInstanceId,height:"95%"});
  }
  function refresh(){
 		$("#grid_candidate").ligerGetGridManager().loadData();
