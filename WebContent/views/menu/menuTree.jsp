@@ -104,12 +104,12 @@
 
 				 TBizMenuService.removeMenu(
 						 curr_node_id,
-		                 function(result){
-		                     if(result){
+		                 function(ret){
+		                     if(ret.result){
 		                        alert("删除成功");
 		                        refreshTree();
 		                     }else{
-		                        alert("删除失败");
+		                        alert("删除失败:"+ret.msg);
 		                     }
 		                 }
 		            );

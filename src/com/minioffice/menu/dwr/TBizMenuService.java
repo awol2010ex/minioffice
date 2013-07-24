@@ -1,5 +1,7 @@
 package com.minioffice.menu.dwr;
 
+import net.sf.json.JSONObject;
+
 import org.directwebremoting.annotations.RemoteProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,14 +55,17 @@ public class TBizMenuService {
 		return menu;
 	}
 	//删除菜单信息
-	public boolean removeMenu(String id){
+	public JSONObject removeMenu(String id){
+		boolean result =true;
+		String msg ="";
 		try {
 			tBizMenuService.removeMenu(id);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			logger.error("",e);
-			return false;
+			logger.error("", e);
+			msg =e.getLocalizedMessage();
+			result= false;
 		}
-		return true;
+		return new JSONObject().element("result", result).element("msg", msg);
 	}
 }
