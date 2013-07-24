@@ -45,6 +45,10 @@ $(function() {
 				  {
 				   _win.show();
 				  }
+				     $("#_loginid").val("");		 
+			    	 $("#_username").val("");
+			    	 $("#_password").val("");
+			         $("#_email").val("");
 			   }}       
 			]
 		},
@@ -74,15 +78,15 @@ $(function() {
 	    	 $("#_username").val(),
 	    	 $("#_password").val(),
 	         $("#_email").val(),
-	         function(result){
-	             if(result){
+	         function(ret){
+	             if(ret.result){
 	                alert("保存成功");
 	                refresh();
 	                if(_win){
 	                	_win.hide();
 	                }
 	             }else{
-	                alert("保存失败");
+	                alert("保存失败:"+ret.msg);
 	             }
 	         }
 	    );
