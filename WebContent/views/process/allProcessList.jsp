@@ -12,7 +12,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title></title>
 <jsp:include  page="../../css.jsp"  flush="true" />
-
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/interface/ProcessDwr.js?rand=<%=new java.util.Date().getTime() %>'></script>
+<script type='text/javascript' src='<%=request.getContextPath() %>/dwr/engine.js'></script>
 <style type="text/css">
 body {
 	font-size: 12px;
@@ -29,9 +30,10 @@ $(function() {
               { display: '开始时间', name: 'startTime', width: "20%",isAllowHide: true ,type:'date'},
               { display: '结束时间', name: 'endTime', width: "20%",isAllowHide: true,type:'date' },
               { display: '流程定义序号', name: 'processDefinitionId', width: "20%",isAllowHide: true },
+              { display: '结束原因', name: 'deleteReason', width: "20%",isAllowHide: true },
               { display: '操作', name: 'id', width: "30%",isAllowHide: true,
               	 render :function(row,i){
-              		   return   "<span><button  onclick=\"viewProcessList('"+row.processInstanceId+"')\"  >查看审批记录</button></span>"
+              		   return   "<span><button  onclick=\"viewProcessList('"+row.processInstanceId+"')\"  >查看审批记录</button>&nbsp;<button  onclick=\"deleteProcessInstance('"+row.processInstanceId+"')\"  >删除流程</button></span>"
               		 
               	 }
                 
@@ -75,6 +77,20 @@ function afterLoadDiagram(frameId){
 //查看流程审批列表
 function viewProcessList(processInstanceId){
 	 top.navtab.addTabItem({tabid:new Date().getTime(),text:'流程审批列表',url:'<%=contextPath%>/views/task/processTaskList.jsp?processInstanceId='+processInstanceId,height:"95%"});
+}
+//删除流程
+function deleteProcessInstance(processInstanceId){
+	ProcessDwr.deleteProcessInstance(processInstanceId ,function(ret){
+		  if(ret.result){
+	        alert("删除成功");
+	        refresh();
+	    }else{
+	        alert("删除失败:"+ret.msg);
+	    }
+	});
+}
+function refresh(){
+	$("#grid").ligerGetGridManager().loadData();
 }
 </script>
 </head>

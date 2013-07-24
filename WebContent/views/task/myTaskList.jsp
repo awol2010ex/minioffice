@@ -87,9 +87,9 @@ $(function() {
               { display: '流程定义名称', name: 'processDefinitionName', width: "15%",isAllowHide: true },
               { display: '流程定义ID', name: 'processDefinitionId', width: "15%",isAllowHide: true },
               { display: '流程实例ID', name: 'processInstanceId', width: "15%",isAllowHide: true },
-              { display: '操作', name: 'id', width: "15%",isAllowHide: true,
+              { display: '操作', name: 'id', width: "20%",isAllowHide: true,
              	 render :function(row,i){
-             		   return   "<button  onclick=\"commitTask('"+row.id+"')\"  >审批</button>"
+             		   return   "<span><button  onclick=\"commitTask('"+row.id+"')\"  >审批</button>&nbsp;<button  onclick=\"viewProcessList('"+row.processInstanceId+"')\"  >查看审批记录</button></span>"
              		 
              	 }
                

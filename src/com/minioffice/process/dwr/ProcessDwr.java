@@ -81,4 +81,19 @@ public class ProcessDwr {
 		}
 		return new JSONObject().element("result", result).element("msg", msg);
 	}
+	
+	//删除流程实例
+	public JSONObject deleteProcessInstance(String processInstanceId){
+		boolean result =true;
+		String msg ="";
+		try {
+		 processEngineFactoryBean
+			.getProcessEngineConfiguration().getRuntimeService().deleteProcessInstance(processInstanceId, "delete");
+		} catch (Exception e) {
+			logger.error("", e);
+			msg =e.getLocalizedMessage();
+			result= false;
+		}
+		return new JSONObject().element("result", result).element("msg", msg);
+	}
 }

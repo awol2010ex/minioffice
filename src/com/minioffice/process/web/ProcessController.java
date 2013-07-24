@@ -198,6 +198,8 @@ public class ProcessController {
 							// 结束时间
 							.element("processDefinitionId",
 									p.getProcessDefinitionId())// 流程定义ID
+							.element("deleteReason",
+									p.getDeleteReason())// 结束原因
 					);
 				}
 			}
@@ -239,6 +241,8 @@ public class ProcessController {
 										p.getProcessDefinitionId())// 流程定义ID
 										
 							   .element("processInstanceId", p.getId()) //流程实例ID
+							   .element("deleteReason",
+									p.getDeleteReason())// 结束原因
 						);
 					}
 				}

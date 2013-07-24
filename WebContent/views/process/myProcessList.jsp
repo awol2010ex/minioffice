@@ -28,6 +28,7 @@ $(function() {
               { display: '序号', name: 'id', width: "20%",isAllowHide: true },
               { display: '开始时间', name: 'startTime', width: "20%",isAllowHide: true ,type:'date'},
               { display: '结束时间', name: 'endTime', width: "20%",isAllowHide: true,type:'date' },
+              { display: '结束原因', name: 'deleteReason', width: "20%",isAllowHide: true },
               { display: '流程定义序号', name: 'processDefinitionId', width: "20%",isAllowHide: true },
         ],
         url: "<%=contextPath%>/restful/process/myprocess/list/",
