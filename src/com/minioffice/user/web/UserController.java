@@ -75,6 +75,41 @@ public class UserController {
 		return "main";
 	}
 	
+	/* 注销 */
+	@RequestMapping(value = "/logout")
+	public String logout(String j_username, String j_password,
+			HttpServletRequest request) {
+
+
+		Subject currentUser = SecurityUtils.getSubject();
+		try {
+			currentUser.logout();
+		} catch (UnknownAccountException e) {
+			request.setAttribute("error", "用户不存在");
+			logger.error("", e);
+			return "index";
+		} catch (IncorrectCredentialsException e) {
+			request.setAttribute("error", "验证错误");
+			logger.error("", e);
+			return "index";
+		} catch (LockedAccountException e) {
+			request.setAttribute("error", "用户被锁住");
+			logger.error("", e);
+			return "index";
+		} catch (ExcessiveAttemptsException e) {
+			request.setAttribute("error", "多次登录不成功");
+			logger.error("", e);
+			return "index";
+		} catch (AuthenticationException e) {
+			request.setAttribute("error", "验证错误");
+			logger.error("", e);
+			return "index";
+		}
+
+		return "index";
+	}
+	
+	
 	@RequestMapping(value = "/list")
 	public void getUserList(int page, int pagesize,
 			HttpServletResponse response) {

@@ -2,6 +2,9 @@
     pageEncoding="UTF-8"%>
 <%
 	String contextPath = request.getContextPath();
+
+org.apache.shiro.subject.Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
+org.activiti.engine.identity.User user = (org.activiti.engine.identity.User) currentUser.getSession().getAttribute("user");// 当前用户
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,7 +30,8 @@ var tree = null;
 var navtab=null;
 $(function() {
 	$("body").ligerLayout( {
-		leftWidth : 300
+		leftWidth : 300,
+		topHeight:30
 	});
 	
 	//标签页
@@ -83,7 +87,9 @@ $(function() {
 </script>
 </head>
 <body>
-
+<div position="top">
+当前用户:<%=user.getLastName() %>  &nbsp;&nbsp; <a href="<%=contextPath%>/restful/user/logout/">注销</a>
+</div>
 <div position="left">
 
   <ul id="tree1" style="height: 100%">
