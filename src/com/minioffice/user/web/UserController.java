@@ -68,7 +68,7 @@ public class UserController {
 			return "index";
 		}
 		User user = processEngineFactoryBean.getProcessEngineConfiguration()
-				.getIdentityService().createUserQuery().userId(j_username)
+				.getIdentityService().createUserQuery().userFirstName(j_username)
 				.singleResult();
 		currentUser.getSession().setAttribute("user", user);// 保存会话
 
@@ -92,7 +92,8 @@ public class UserController {
 				for (User p : list) {
 					Rows.add(new JSONObject().element("id", p.getId())
 							.element("id", p.getId())
-							.element("name", p.getFirstName())//名称
+							.element("loginid", p.getFirstName())//登录名
+							.element("alias", p.getLastName())//名称
 							.element("email", p.getEmail()) );//邮箱
 				}
 			}

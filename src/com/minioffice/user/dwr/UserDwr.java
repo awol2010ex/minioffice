@@ -14,7 +14,7 @@ public class UserDwr {
 	@Autowired
 	private ProcessEngineFactoryBean processEngineFactoryBean;// 流程操作部件
 
-	public boolean saveUser(String userName, String password,String email) {
+	public boolean saveUser(String loginid,String username, String password,String email) {
 		try {
 			String id = processEngineFactoryBean
 					.getProcessEngineConfiguration().getIdGenerator()
@@ -22,11 +22,12 @@ public class UserDwr {
 			User u = processEngineFactoryBean.getProcessEngineConfiguration()
 					.getIdentityService().newUser(id);
 
-			u.setPassword(password);
-			u.setFirstName(userName);
+			u.setPassword(password);//密码
+			u.setFirstName(loginid);//登录名
+			u.setLastName(username);//名称
 			u.setEmail(email);
 			processEngineFactoryBean.getProcessEngineConfiguration()
-					.getIdentityService().saveUser(u);
+					.getIdentityService().saveUser(u);//保存用户
 		} catch (Exception e) {
 			logger.error("", e);
 			return false;

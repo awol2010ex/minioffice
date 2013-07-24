@@ -38,17 +38,21 @@ $(function() {
 			items:[
 			   {text:"新建",click:function(){
 				  if(!_win)
-					  
+			      {
 				   _win =$.ligerDialog.open({ target: $("#target") });
-				  else
-					  _win.show();
+			      }
+				   else
+				  {
+				   _win.show();
+				  }
 			   }}       
 			]
 		},
         columns: [ 
               
               { display: 'ID', name: 'id', width: "15%",isAllowHide: true },
-              { display: '名称', name: 'name', width: "15%",isAllowHide: true },
+              { display: '登陆名', name: 'loginid', width: "15%",isAllowHide: true },
+              { display: '名称', name: 'alias', width: "15%",isAllowHide: true },
               { display: 'Email', name: 'email', width: "15%",isAllowHide: true }
         ],
         url: "<%=contextPath%>/restful/user/list/",
@@ -66,7 +70,8 @@ $(function() {
 	//保存用户
 	$("#buttonSave").click(function(){
 	    UserDwr.saveUser(
-	    	 $("#_userName").val(),
+	    	 $("#_loginid").val(),		 
+	    	 $("#_username").val(),
 	    	 $("#_password").val(),
 	         $("#_email").val(),
 	         function(result){
@@ -103,7 +108,8 @@ function refresh(){
 
 <div id="target" style="width:200px; margin:3px; display:none;">
      <table width="100%">
-        <tr><td>用户名</td></tr><tr><td><input type='text'   id="_userName"/></td></tr>
+        <tr><td>登陆名</td></tr><tr><td><input type='text'   id="_loginid"/></td></tr>
+        <tr><td>用户名称</td></tr><tr><td><input type='text'   id="_username"/></td></tr>
         <tr><td>密码</td></tr><tr><td><input type='password' id="_password"/></td></tr>
         <tr><td>邮箱</td></tr><tr><td><input type='text'  id="_email" /></td></tr>
         
