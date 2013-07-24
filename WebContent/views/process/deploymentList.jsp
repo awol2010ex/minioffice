@@ -83,12 +83,12 @@ $(function() {
 //删除流程模版
 function deleteDeployment(deploymentId){
 	
-	ProcessDwr.deleteDeployment(deploymentId ,function(result){
-		  if(result){
+	ProcessDwr.deleteDeployment(deploymentId ,function(ret){
+		  if(ret.result){
 	        alert("删除成功");
 	        refresh();
 	    }else{
-	        alert("删除失败");
+	        alert("删除失败:"+ret.msg);
 	    }
 	});
 	

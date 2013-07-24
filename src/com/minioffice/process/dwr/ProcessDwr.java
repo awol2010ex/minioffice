@@ -26,7 +26,9 @@ public class ProcessDwr {
 	private ProcessEngineFactoryBean processEngineFactoryBean;// 流程操作部件
 
 	// 发起流程
-	public boolean initProcess(String key) {
+	public JSONObject initProcess(String key) {
+		boolean result =true;
+		String msg ="";
 		try {
 			Subject currentUser = SecurityUtils.getSubject();
 			User user = (User) currentUser.getSession().getAttribute("user");
@@ -37,9 +39,10 @@ public class ProcessDwr {
 					.getRuntimeService().startProcessInstanceByKey(key);
 		} catch (Exception e) {
 			logger.error("", e);
-			return false;
+			msg =e.getLocalizedMessage();
+			result= false;
 		}
-		return true;
+		return new JSONObject().element("result", result).element("msg", msg);
 	}
 
 	// 流程变量列表
@@ -65,14 +68,17 @@ public class ProcessDwr {
 	}
 	
 	//删除流程定义
-	public boolean deleteDeployment(String deploymentId){
+	public JSONObject deleteDeployment(String deploymentId){
+		boolean result =true;
+		String msg ="";
 		try {
 		 processEngineFactoryBean
 			.getProcessEngineConfiguration().getRepositoryService().deleteDeployment(deploymentId);
 		} catch (Exception e) {
 			logger.error("", e);
-			return false;
+			msg =e.getLocalizedMessage();
+			result= false;
 		}
-		return true;
+		return new JSONObject().element("result", result).element("msg", msg);
 	}
 }

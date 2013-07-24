@@ -60,11 +60,11 @@ $(function() {
                 button.click(function(){
                 	var _row =$(this).data("row"); 
                 	//发起流程
-                	ProcessDwr.initProcess(_row.key,function(result){
-                		 if(result){
+                	ProcessDwr.initProcess(_row.key,function(ret){
+                		 if(ret.result){
                             alert("发起成功");
                          }else{
-                            alert("发起失败");
+                            alert("发起失败:"+ret.msg);
                          }
                 	});
                 });
