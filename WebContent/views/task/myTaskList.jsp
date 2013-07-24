@@ -262,12 +262,12 @@ function commitTask(taskId){
 	 
 	 
  	//审批任务流程
- 	TaskDwr.commitTask(taskId ,varset,function(result){
-		   if(result){
+ 	TaskDwr.commitTask(taskId ,varset,function(ret){
+		if(ret.result){
           alert("审批成功");
           refresh();
         }else{
-          alert("审批失败");
+          alert("审批失败:"+ret.msg);
         }
  	});
 	 

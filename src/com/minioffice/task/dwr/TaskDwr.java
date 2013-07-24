@@ -36,7 +36,10 @@ public class TaskDwr {
 
 	// 审批任务通过
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public boolean commitTask(String taskId, Map varset) {
+	public JSONObject commitTask(String taskId, Map varset) {
+		
+		boolean result =true;
+		String msg ="";
 		try {
 			Subject currentUser = SecurityUtils.getSubject();
 			User user = (User) currentUser.getSession().getAttribute("user");
@@ -61,9 +64,10 @@ public class TaskDwr {
 					.getTaskService().complete(taskId, varset);// 审批任务
 		} catch (Exception e) {
 			logger.error("", e);
-			return false;
+			msg =e.getLocalizedMessage();
+			result= false;
 		}
-		return true;
+		return new JSONObject().element("result", result).element("msg", msg);
 	}
 
 	// 取得表单数据
@@ -102,7 +106,10 @@ public class TaskDwr {
 	}
 
 	// 驳回
-	public boolean rejectTask(String taskId, String activityId) {
+	public JSONObject rejectTask(String taskId, String activityId) {
+		boolean result =true;
+		String msg ="";
+		
 		// 找到当前任务
 		TaskEntity task = null;
 		try {
@@ -113,7 +120,10 @@ public class TaskDwr {
 			logger.error("", e);
 		}
 		if (task == null) {
-			return false;
+			msg ="任务不存在";
+			logger.error("任务不存在");
+			result= false;
+			return new JSONObject().element("result", result).element("msg", msg);
 		}
 
 		
@@ -121,7 +131,9 @@ public class TaskDwr {
 		HistoricTaskInstanceQuery   oldTaskInstanceQuery=processEngineFactoryBean.getProcessEngineConfiguration().getHistoryService().createHistoricTaskInstanceQuery().processInstanceId(task.getProcessInstanceId()).taskDefinitionKey(activityId);
 		if(oldTaskInstanceQuery.count()==0){
 			logger.error("不是已经过的环节");
-			return false;
+			msg ="不是已经过的环节";
+			result= false;
+			return new JSONObject().element("result", result).element("msg", msg);
 		}
 		
 		// 找到流程实例
@@ -134,9 +146,15 @@ public class TaskDwr {
 					.singleResult();
 		} catch (Exception e) {
 			logger.error("", e);
+			msg =e.getLocalizedMessage();
+			result= false;
+			return new JSONObject().element("result", result).element("msg", msg);
 		}
 		if (processInstance == null) {
-			return false;
+			logger.error("流程不存在");
+			msg ="流程不存在";
+			result= false;
+			return new JSONObject().element("result", result).element("msg", msg);
 		}
 
 		try {
@@ -150,10 +168,12 @@ public class TaskDwr {
 									new HashMap<String, Object>()));
 		} catch (Exception e) {
 			logger.error("", e);
-			return false;
+			msg =e.getLocalizedMessage();
+			result= false;
+			return new JSONObject().element("result", result).element("msg", msg);
 		}
 
-		return true;
+		return new JSONObject().element("result", result).element("msg", msg);
 	}
 
 }

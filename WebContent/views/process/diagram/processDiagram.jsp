@@ -73,11 +73,11 @@ $(function() {
 				
 				if(taskId){
 					  //驳回
-					  TaskDwr.rejectTask(taskId ,activityId ,function(result){
-						  if(result){
+					  TaskDwr.rejectTask(taskId ,activityId ,function(ret){
+						  if(ret.result){
 					          alert("驳回成功");
 					      }else{
-					          alert("驳回失败");
+					          alert("驳回失败:"+ret.msg);
 					      }
 					  });
 				}
