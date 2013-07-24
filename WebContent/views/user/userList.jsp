@@ -31,7 +31,7 @@ $(function() {
 	
 	
 
-	//被分派任务
+	//用户列表
 	g=$("#grid").ligerGrid({
 		toolbar:{
 			
@@ -39,12 +39,13 @@ $(function() {
 			   {text:"新建",click:function(){
 				  if(!_win)
 			      {
-				   _win =$.ligerDialog.open({ target: $("#target") });
+				   _win =$.ligerDialog.open({title:"新建用户", target: $("#target") });
 			      }
 				   else
 				  {
 				   _win.show();
 				  }
+				     $("#_userid").val("");
 				     $("#_loginid").val("");		 
 			    	 $("#_username").val("");
 			    	 $("#_password").val("");
@@ -54,7 +55,7 @@ $(function() {
 		},
         columns: [ 
               
-              { display: 'ID', name: 'id', width: "15%",isAllowHide: true },
+              { display: 'ID', name: 'userid', width: "15%",isAllowHide: true },
               { display: '登陆名', name: 'loginid', width: "15%",isAllowHide: true },
               { display: '名称', name: 'alias', width: "15%",isAllowHide: true },
               { display: 'Email', name: 'email', width: "15%",isAllowHide: true }
@@ -67,12 +68,41 @@ $(function() {
         height:"90%",
         enabledEdit: true,
         dateFormat:'yyyy-MM-dd hh:mm:ss',
-        pageSizeOptions: [5, 10, 15]
+        pageSizeOptions: [5, 10, 15],
+        onDblClickRow:function(_data,_id,_row){
+        	UserDwr.getUser(
+       	    	 _data.userid,
+       	         function(ret){
+       	    		 if(!_win)
+   			      {
+   				   _win =$.ligerDialog.open({ title:"修改用户" ,target: $("#target") });
+   			      }
+   				   else
+   				  {
+   				   _win.show();
+   				  }
+       	    		$("#_userid").val("");
+				     $("#_loginid").val("");		 
+			    	 $("#_username").val("");
+			    	 $("#_password").val("");
+			         $("#_email").val("");
+       	    		 
+       	    		 
+       	    		$("#_userid").val(ret.id);
+       	    		 $("#_loginid").val(ret.firstName);	 
+       		    	 $("#_username").val(ret.lastName);
+       		    	 $("#_password").val(ret.password);
+       		         $("#_email").val(ret.email);
+       	         }
+       	    );
+        }
 
     });
 	
 	//保存用户
 	$("#buttonSave").click(function(){
+		
+		if($("#_userid").val() ==""){
 	    UserDwr.saveUser(
 	    	 $("#_loginid").val(),		 
 	    	 $("#_username").val(),
@@ -90,7 +120,27 @@ $(function() {
 	             }
 	         }
 	    );
-	    
+		}else{
+			UserDwr.updateUser(
+					$("#_userid").val(),	
+			    	 $("#_loginid").val(),		 
+			    	 $("#_username").val(),
+			    	 $("#_password").val(),
+			         $("#_email").val(),
+			         function(ret){
+			             if(ret.result){
+			                alert("更新成功");
+			                refresh();
+			                if(_win){
+			                	_win.hide();
+			                }
+			             }else{
+			                alert("更新失败:"+ret.msg);
+			             }
+			         }
+			    );
+			
+		} 
 	});
 });
 
@@ -110,7 +160,7 @@ function refresh(){
 
 
 
-<div id="target" style="width:200px; margin:3px; display:none;">
+<div id="target" style="width:200px; margin:3px; display:none;" title="用户信息">
      <table width="100%">
         <tr><td>登陆名</td></tr><tr><td><input type='text'   id="_loginid"/></td></tr>
         <tr><td>用户名称</td></tr><tr><td><input type='text'   id="_username"/></td></tr>
@@ -120,6 +170,8 @@ function refresh(){
         
         <tr><td><input   type="button"  id="buttonSave"  value="保存"/></td></tr>
      </table>
+     
+     <input type='hidden'   id="_userid"/>
 </div>
 
 </body>
